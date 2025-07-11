@@ -20,7 +20,7 @@ const Index = () => {
             <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
               <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">Join the Club</a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary transition-colors">
+            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
               <Link to="/about">Learn More</Link>
             </Button>
           </div>
