@@ -18,7 +18,7 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-              <Link to="/play-cricket">Join the Club</Link>
+              <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">Join the Club</a>
             </Button>
             <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary transition-colors">
               <Link to="/about">Learn More</Link>
@@ -95,9 +95,9 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-3">
-              <Link to="/play-cricket">
+              <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">
                 Become a Member <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              </a>
             </Button>
             <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3">
               <Link to="/contact">Contact Us</Link>

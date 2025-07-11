@@ -9,13 +9,13 @@ const Navigation = () => {
   const location = useLocation();
 
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'About Us', path: '/about' },
-    { name: 'Play Cricket', path: '/play-cricket' },
-    { name: 'Contact Us', path: '/contact' },
+    { name: 'Home', path: '/', external: false },
+    { name: 'About Us', path: '/about', external: false },
+    { name: 'Play Cricket', path: 'https://kingstonbagpuize.play-cricket.com/home', external: true },
+    { name: 'Contact Us', path: '/contact', external: false },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string, external: boolean) => !external && location.pathname === path;
 
   return (
     <nav className="bg-background border-b border-border sticky top-0 z-50">
@@ -30,17 +30,29 @@ const Navigation = () => {
           <div className="hidden md:flex items-center space-x-8">
             <div className="flex space-x-8">
               {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`px-3 py-2 text-sm font-medium transition-colors ${
-                    isActive(item.path)
-                      ? 'text-primary border-b-2 border-primary'
-                      : 'text-foreground hover:text-primary'
-                  }`}
-                >
-                  {item.name}
-                </Link>
+                item.external ? (
+                  <a
+                    key={item.name}
+                    href={item.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2 text-sm font-medium transition-colors text-foreground hover:text-primary"
+                  >
+                    {item.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`px-3 py-2 text-sm font-medium transition-colors ${
+                      isActive(item.path, item.external)
+                        ? 'text-primary border-b-2 border-primary'
+                        : 'text-foreground hover:text-primary'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                )
               ))}
             </div>
             <ModeToggle />
@@ -65,18 +77,31 @@ const Navigation = () => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-background border-t border-border">
               {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-3 py-2 text-base font-medium transition-colors ${
-                    isActive(item.path)
-                      ? 'text-primary bg-accent'
-                      : 'text-foreground hover:text-primary hover:bg-accent'
-                  }`}
-                >
-                  {item.name}
-                </Link>
+                item.external ? (
+                  <a
+                    key={item.name}
+                    href={item.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-3 py-2 text-base font-medium transition-colors text-foreground hover:text-primary hover:bg-accent"
+                  >
+                    {item.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-3 py-2 text-base font-medium transition-colors ${
+                      isActive(item.path, item.external)
+                        ? 'text-primary bg-accent'
+                        : 'text-foreground hover:text-primary hover:bg-accent'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                )
               ))}
             </div>
           </div>
