@@ -11,6 +11,7 @@ const Navigation = () => {
   const navItems = [
     { name: 'Home', path: '/', external: false },
     { name: 'About Us', path: '/about', external: false },
+    { name: 'Fixtures & Results', path: 'https://kingstonbagpuize.play-cricket.com/Matches', external: true },
     { name: 'Play Cricket', path: 'https://kingstonbagpuize.play-cricket.com/home', external: true },
     { name: 'Contact Us', path: '/contact', external: false },
   ];
