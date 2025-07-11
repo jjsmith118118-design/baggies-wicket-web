@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { ModeToggle } from '@/components/mode-toggle';
 import { Menu, X } from 'lucide-react';
 
 const Navigation = () => {
@@ -26,24 +27,28 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive(item.path)
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-foreground hover:text-primary'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+          <div className="hidden md:flex items-center space-x-8">
+            <div className="flex space-x-8">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`px-3 py-2 text-sm font-medium transition-colors ${
+                    isActive(item.path)
+                      ? 'text-primary border-b-2 border-primary'
+                      : 'text-foreground hover:text-primary'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            <ModeToggle />
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-2">
+            <ModeToggle />
             <Button
               variant="ghost"
               size="icon"
