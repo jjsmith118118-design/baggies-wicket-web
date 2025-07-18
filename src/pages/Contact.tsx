@@ -73,7 +73,15 @@ const Contact = () => {
                         <p className="text-muted-foreground">
                           Tuesday evenings: 6:00 PM - 8:00 PM<br />
                           Sunday mornings: 10:00 AM - 12:00 PM<br />
-                          Match days: As scheduled
+                          Match days:{" "}
+                          <a 
+                            href="/#fixtures-results" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline"
+                          >
+                            As scheduled - click here
+                          </a>
                         </p>
                       </div>
                     </div>
