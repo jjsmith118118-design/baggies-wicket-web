@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 
 interface Match {
@@ -21,14 +20,6 @@ interface Match {
   awayFormGuide?: string[];
 }
 
-interface TrainingSession {
-  id: string;
-  date: string;
-  time: string;
-  duration: string;
-  teams: string[];
-  type: string;
-}
 
 // Real data extracted from Kingston Bagpuize Play Cricket
 const liveMatches: Match[] = [
@@ -112,40 +103,6 @@ const liveMatches: Match[] = [
   }
 ];
 
-const mockTrainingSessions: TrainingSession[] = [
-  {
-    id: 't1',
-    date: '2025-07-15',
-    time: '18:00',
-    duration: '20:00',
-    teams: ['1st XI', '2nd XI', '3rd XI', '4th XI'],
-    type: 'Adult Whole Club Training'
-  },
-  {
-    id: 't2',
-    date: '2025-07-16',
-    time: '18:00',
-    duration: '20:00',
-    teams: ['1st XI', '2nd XI'],
-    type: 'Adult Training 1st-2nd XIs'
-  },
-  {
-    id: 't3',
-    date: '2025-07-17',
-    time: '18:00',
-    duration: '20:00',
-    teams: ['U15', 'U15 Surrey', 'U15Bs'],
-    type: 'U15 Training'
-  },
-  {
-    id: 't4',
-    date: '2025-07-18',
-    time: '18:00',
-    duration: '20:00',
-    teams: ['U11', 'U11 Surrey'],
-    type: 'U11 Training'
-  }
-];
 
 const Matches = () => {
   const [matches, setMatches] = useState<Match[]>(liveMatches);
@@ -293,14 +250,8 @@ const Matches = () => {
           </CardContent>
         </Card>
 
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="fixtures" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="fixtures">Fixtures</TabsTrigger>
-            <TabsTrigger value="training">Training Sessions</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="fixtures" className="space-y-6">
+        {/* Main Content */}
+        <div className="space-y-6">
             {loading ? (
               <div className="flex justify-center items-center py-8">
                 <RefreshCw className="h-8 w-8 animate-spin text-primary" />
@@ -392,28 +343,7 @@ const Matches = () => {
                 </Card>
               ))
             )}
-          </TabsContent>
-
-          <TabsContent value="training" className="space-y-6">
-            <Card className="border-dashed">
-              <CardContent className="p-6 text-center">
-                <h3 className="font-semibold text-lg mb-2">Training Sessions</h3>
-                <p className="text-muted-foreground mb-4">
-                  Training session information will be available once integrated with the Play Cricket calendar system.
-                </p>
-                <Button variant="outline" asChild>
-                  <a 
-                    href="https://kingstonbagpuize.play-cricket.com/calendar"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View Calendar on Play Cricket
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        </div>
 
         {/* Integration Note */}
         <Card className="mt-8 border-dashed">
