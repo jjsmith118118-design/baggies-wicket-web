@@ -2,30 +2,13 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Users, Trophy, MapPin, ArrowRight } from 'lucide-react';
+import HeroCarousel from '@/components/HeroCarousel';
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Kingston Bagpuize Cricket Club
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            Welcome to our community cricket club where passion meets tradition. 
-            Join us for exciting cricket in the heart of Oxfordshire.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-              <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">Join the Club</a>
-            </Button>
-            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-              <Link to="/about">Learn More</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Hero Carousel Section */}
+      <HeroCarousel />
 
       {/* Features Section */}
       <section className="py-16">
