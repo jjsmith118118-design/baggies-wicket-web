@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ModeToggle } from '@/components/mode-toggle';
 import { Menu, X } from 'lucide-react';
 
 const Navigation = () => {
@@ -56,12 +55,10 @@ const Navigation = () => {
                 )
               ))}
             </div>
-            <ModeToggle />
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center space-x-2">
-            <ModeToggle />
+          <div className="md:hidden">
             <Button
               variant="ghost"
               size="icon"
