@@ -43,8 +43,7 @@ const slides: Slide[] = [
     description: "Take part in regular league matches and tournaments. Test your skills against local teams in a competitive yet friendly environment.",
     primaryAction: {
       text: "View Fixtures",
-      href: "https://kingstonbagpuize.play-cricket.com/Matches",
-      external: true
+      href: "/#fixtures-results"
     },
     secondaryAction: {
       text: "Contact Us",
@@ -136,6 +135,21 @@ const HeroCarousel = () => {
                 >
                   {currentSlideData.primaryAction.text}
                 </a>
+              </Button>
+            ) : currentSlideData.primaryAction.href.includes('#') ? (
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                className="text-lg px-8 py-3"
+                onClick={() => {
+                  const elementId = currentSlideData.primaryAction.href.replace('/#', '');
+                  const element = document.getElementById(elementId);
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
+                {currentSlideData.primaryAction.text}
               </Button>
             ) : (
               <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">

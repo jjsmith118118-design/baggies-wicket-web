@@ -12,13 +12,6 @@ const Index = () => {
       {/* Hero Carousel Section */}
       <HeroCarousel />
 
-      {/* Fixtures & Results Section */}
-      <section className="py-16 bg-accent/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FixturesResults />
-        </div>
-      </section>
-
       {/* Features Section */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,6 +68,13 @@ const Index = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* Fixtures & Results Section */}
+      <section id="fixtures-results" className="py-16 bg-accent/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FixturesResults />
         </div>
       </section>
 

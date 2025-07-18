@@ -10,7 +10,7 @@ const Navigation = () => {
   const navItems = [
     { name: 'Home', path: '/', external: false },
     { name: 'About Us', path: '/about', external: false },
-    { name: 'Fixtures & Results', path: 'https://kingstonbagpuize.play-cricket.com/Matches', external: true },
+    { name: 'Fixtures & Results', path: '/#fixtures-results', external: false },
     { name: 'Club Store', path: 'https://www.serioussport.co.uk/teamstores/kingston-bagpuize', external: true },
     { name: 'Contact Us', path: '/contact', external: false },
   ];
@@ -42,6 +42,24 @@ const Navigation = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-3 py-2 text-sm font-medium transition-colors text-foreground hover:text-primary"
+                  >
+                    {item.name}
+                  </a>
+                ) : item.path.includes('#') ? (
+                  <a
+                    key={item.name}
+                    href={item.path}
+                    className="px-3 py-2 text-sm font-medium transition-colors text-foreground hover:text-primary"
+                    onClick={(e) => {
+                      if (item.path.startsWith('/#')) {
+                        e.preventDefault();
+                        const elementId = item.path.replace('/#', '');
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }
+                    }}
                   >
                     {item.name}
                   </a>
@@ -87,6 +105,25 @@ const Navigation = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setIsOpen(false)}
+                    className="block px-3 py-2 text-base font-medium transition-colors text-foreground hover:text-primary hover:bg-accent"
+                  >
+                    {item.name}
+                  </a>
+                ) : item.path.includes('#') ? (
+                  <a
+                    key={item.name}
+                    href={item.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsOpen(false);
+                      if (item.path.startsWith('/#')) {
+                        const elementId = item.path.replace('/#', '');
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }
+                    }}
                     className="block px-3 py-2 text-base font-medium transition-colors text-foreground hover:text-primary hover:bg-accent"
                   >
                     {item.name}
