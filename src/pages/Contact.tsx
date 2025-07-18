@@ -7,8 +7,16 @@ import { MapPin, Phone, Mail, Clock, Instagram } from 'lucide-react';
 const Contact = () => {
   return <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="relative bg-primary text-primary-foreground py-16 overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="/lovable-uploads/c866206e-7e68-4ea0-9b65-5ff4d80b0013.png" 
+            alt="Cricket match at Kingston Bagpuize Cricket Club" 
+            className="w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-primary/70"></div>
+        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Contact Us</h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto">
             Get in touch with Kingston Bagpuize Cricket Club
