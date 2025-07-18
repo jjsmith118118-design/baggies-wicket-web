@@ -10,7 +10,7 @@ const Navigation = () => {
   const navItems = [
     { name: 'Home', path: '/', external: false },
     { name: 'About Us', path: '/about', external: false },
-    { name: 'Fixtures & Results', path: '/#fixtures-results', external: false },
+    { name: 'Matches', path: '/matches', external: false },
     { name: 'Club Store', path: 'https://www.serioussport.co.uk/teamstores/kingston-bagpuize', external: true },
     { name: 'Contact Us', path: '/contact', external: false },
   ];
