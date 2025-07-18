@@ -109,42 +109,8 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Club Stats Row */}
-        <div className="border-t border-primary-foreground/20 mt-12 pt-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="space-y-2">
-              <Calendar className="h-6 w-6 mx-auto opacity-80" />
-              <div>
-                <p className="text-lg font-bold">191</p>
-                <p className="text-sm opacity-90">Years of Cricket</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Users className="h-6 w-6 mx-auto opacity-80" />
-              <div>
-                <p className="text-lg font-bold">3</p>
-                <p className="text-sm opacity-90">Teams</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Trophy className="h-6 w-6 mx-auto opacity-80" />
-              <div>
-                <p className="text-lg font-bold">1994</p>
-                <p className="text-sm opacity-90">League Member Since</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Clock className="h-6 w-6 mx-auto opacity-80" />
-              <div>
-                <p className="text-lg font-bold">Apr-Sep</p>
-                <p className="text-sm opacity-90">Season</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Copyright */}
-        <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center">
+        <div className="border-t border-primary-foreground/20 mt-12 pt-8 text-center">
           <p className="text-sm opacity-80">
             © 2025 Kingston Bagpuize Cricket Club. All rights reserved. | Affiliated to Oxfordshire Cricket Board
           </p>
