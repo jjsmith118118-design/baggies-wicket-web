@@ -131,6 +131,49 @@ const Contact = () => {
           </div>
         </div>
       </section>
+
+      {/* Call to Action Section */}
+      <section className="py-16 bg-muted/50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="order-2 lg:order-1">
+              <img 
+                src="/lovable-uploads/940df71c-ecca-45d0-8757-22ca8e66ee5a.png" 
+                alt="Cricket match in action at Kingston Bagpuize Cricket Club" 
+                className="rounded-lg shadow-lg w-full h-auto"
+              />
+            </div>
+            <div className="order-1 lg:order-2 text-center lg:text-left">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+                Don't leave it too soon.
+              </h2>
+              <p className="text-2xl md:text-3xl text-primary font-semibold mb-8">
+                Get in touch!
+              </p>
+              <p className="text-lg text-muted-foreground mb-8">
+                Whether you're a seasoned player or just starting out, there's a place for you at Kingston Bagpuize Cricket Club. 
+                Join our community and be part of something special.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <a 
+                  href="mailto:kingstonbagpuizecc@gmail.com"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold"
+                >
+                  Email Us Now
+                </a>
+                <a 
+                  href="https://www.instagram.com/baggiescricket/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors font-semibold"
+                >
+                  Follow on Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
