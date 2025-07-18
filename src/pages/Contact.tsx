@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Instagram } from 'lucide-react';
 
 const Contact = () => {
   return (
@@ -43,6 +43,52 @@ const Contact = () => {
                           Kingston Bagpuize Cricket Ground<br />
                           Kingston Bagpuize, Oxfordshire<br />
                           OX13 5AP
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <Instagram className="h-6 w-6 text-primary mt-1" />
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-2">Instagram</h3>
+                        <p className="text-muted-foreground">
+                          <a 
+                            href="https://www.instagram.com/baggiescricket/"
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline"
+                            onClick={(e) => {
+                              // Try to open in Instagram app first, fallback to web
+                              const appUrl = "instagram://user?username=baggiescricket";
+                              const webUrl = "https://www.instagram.com/baggiescricket/";
+                              
+                              // Create a hidden iframe to test if the app can be opened
+                              const iframe = document.createElement("iframe");
+                              iframe.style.display = "none";
+                              iframe.src = appUrl;
+                              document.body.appendChild(iframe);
+                              
+                              // If app doesn't open within 2 seconds, open web version
+                              setTimeout(() => {
+                                document.body.removeChild(iframe);
+                              }, 2000);
+                              
+                              // Also set the href to web URL as fallback
+                              setTimeout(() => {
+                                if (document.visibilityState === "visible") {
+                                  window.open(webUrl, "_blank");
+                                }
+                              }, 500);
+                              
+                              e.preventDefault();
+                            }}
+                          >
+                            @baggiescricket
+                          </a>
                         </p>
                       </div>
                     </div>
