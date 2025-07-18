@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Users, Trophy, MapPin, ArrowRight } from 'lucide-react';
 import HeroCarousel from '@/components/HeroCarousel';
+import Footer from '@/components/Footer';
 
 const Index = () => {
   return (
@@ -140,6 +141,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
