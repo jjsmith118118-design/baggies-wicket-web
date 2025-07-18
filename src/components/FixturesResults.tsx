@@ -13,7 +13,7 @@ interface Match {
   awayTeam: string;
   venue: string;
   competition: string;
-  status: 'upcoming' | 'completed' | 'in-progress';
+  status: 'scheduled' | 'completed' | 'live';
   result?: string;
   teamCategory: 'senior' | 'junior' | 'women';
 }
@@ -27,8 +27,8 @@ const mockMatches: Match[] = [
     homeTeam: 'Kingston Bagpuize CC 1st XI',
     awayTeam: 'Cumnor CC 2nd XI',
     venue: 'The Kingston Bagpuize Sportsfield',
-    competition: 'League',
-    status: 'upcoming',
+    competition: 'Premier Division',
+    status: 'scheduled',
     teamCategory: 'senior'
   },
   {
@@ -38,8 +38,8 @@ const mockMatches: Match[] = [
     homeTeam: 'Oxford Downs CC 3rd XI',
     awayTeam: 'Kingston Bagpuize CC 2nd XI',
     venue: 'Away',
-    competition: 'League',
-    status: 'upcoming',
+    competition: 'Division 3 West',
+    status: 'scheduled',
     teamCategory: 'senior'
   },
   {
@@ -50,19 +50,44 @@ const mockMatches: Match[] = [
     awayTeam: 'Kingston Bagpuize CC Under 11',
     venue: 'Away',
     competition: 'Junior League',
-    status: 'upcoming',
+    status: 'scheduled',
     teamCategory: 'junior'
   },
   {
     id: '4',
-    date: '2025-07-22',
-    time: '18:00',
-    homeTeam: 'Wolvercote CC Under 15',
-    awayTeam: 'Kingston Bagpuize CC Under 15',
+    date: '2025-07-12',
+    time: '14:00',
+    homeTeam: 'Kingston Bagpuize CC 3rd XI',
+    awayTeam: 'Maori Oxshott CC 2nd XI',
+    venue: 'The Kingston Bagpuize Sportsfield',
+    competition: 'Division 8 Central',
+    status: 'completed',
+    result: '227/7 - 223/6',
+    teamCategory: 'senior'
+  },
+  {
+    id: '5',
+    date: '2025-07-12',
+    time: '13:00',
+    homeTeam: 'Outlaws 2.0 CC 1st XI',
+    awayTeam: 'Kingston Bagpuize CC 4th XI',
     venue: 'Away',
-    competition: 'Junior League',
-    status: 'upcoming',
-    teamCategory: 'junior'
+    competition: 'Division 8 West',
+    status: 'completed',
+    result: '197 - 155',
+    teamCategory: 'senior'
+  },
+  {
+    id: '6',
+    date: '2025-07-12',
+    time: '15:00',
+    homeTeam: 'Hampton Hill CC 3rd XI',
+    awayTeam: 'Kingston Bagpuize CC 5th XI',
+    venue: 'Away',
+    competition: 'Division 10 West Central',
+    status: 'completed',
+    result: '89/3 - 88',
+    teamCategory: 'senior'
   }
 ];
 
@@ -126,36 +151,33 @@ const FixturesResults = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'upcoming':
+      case 'scheduled':
         return <Badge variant="outline">Upcoming</Badge>;
       case 'completed':
         return <Badge variant="secondary">Completed</Badge>;
-      case 'in-progress':
+      case 'live':
         return <Badge variant="default">Live</Badge>;
       default:
         return <Badge variant="outline">TBC</Badge>;
     }
   };
 
+  // Separate fixtures and results
+  const upcomingMatches = filteredMatches.filter(match => 
+    match.status === 'scheduled' || match.status === 'live'
+  );
+  
+  const recentResults = filteredMatches.filter(match => 
+    match.status === 'completed'
+  );
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-3xl font-bold text-foreground">Fixtures & Results</h2>
-          <p className="text-muted-foreground mt-1">
-            Upcoming matches and recent results for all teams
-          </p>
-        </div>
-        <Button 
-          onClick={fetchMatchData} 
-          disabled={loading}
-          variant="outline"
-          size="sm"
-          className="flex items-center gap-2"
-        >
-          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-          Refresh Data
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl font-bold text-foreground">Fixtures & Results</h2>
+        <Button onClick={fetchMatchData} disabled={loading} variant="outline">
+          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          Refresh
         </Button>
       </div>
 
@@ -182,103 +204,96 @@ const FixturesResults = () => {
         ))}
       </div>
 
-      {/* Matches by Date */}
-      <div className="space-y-6">
-        {Object.entries(groupedMatches).map(([date, dayMatches]) => (
-          <Card key={date} className="overflow-hidden">
-            <CardHeader className="bg-accent/50">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Calendar className="h-5 w-5 text-primary" />
-                {formatDate(date)}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="space-y-0">
-                {dayMatches.map((match, index) => (
-                  <div 
-                    key={match.id}
-                    className={`p-4 border-b last:border-b-0 hover:bg-accent/20 transition-colors ${
-                      index % 2 === 0 ? 'bg-background' : 'bg-accent/10'
-                    }`}
-                  >
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                      {/* Match Info */}
-                      <div className="flex-1">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                          <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                            <span className="font-medium">{match.time}</span>
-                          </div>
-                          {getStatusBadge(match.status)}
-                          <Badge variant="outline" className="text-xs">
-                            {match.competition}
-                          </Badge>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          {/* Teams */}
-                          <div className="flex items-center gap-4 text-sm">
-                            <div className="flex-1">
-                              <span className="font-medium">{match.homeTeam}</span>
-                            </div>
-                            <div className="text-muted-foreground">vs</div>
-                            <div className="flex-1 text-right">
-                              <span className="font-medium">{match.awayTeam}</span>
-                            </div>
-                          </div>
-                          
-                          {/* Venue */}
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <MapPin className="h-4 w-4" />
-                            <span>{match.venue}</span>
-                          </div>
-                        </div>
+      {loading ? (
+        <div className="flex justify-center items-center py-8">
+          <RefreshCw className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Upcoming Matches */}
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold text-foreground">
+              Upcoming Matches
+            </h3>
+            <div className="space-y-3">
+              {upcomingMatches.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">No upcoming fixtures</p>
+              ) : (
+                upcomingMatches.slice(0, 5).map((match) => (
+                  <Card key={match.id} className="p-4 hover:bg-accent/50 transition-colors">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground font-medium">{match.competition}</span>
+                        <span className="text-sm font-medium">{formatDate(match.date)} - {match.time}</span>
                       </div>
-
-                      {/* Result or Action */}
-                      <div className="flex items-center gap-2">
-                        {match.result ? (
-                          <div className="text-sm font-medium text-center">
-                            <div className="text-primary">{match.result}</div>
-                          </div>
-                        ) : (
-                          <Button variant="outline" size="sm">
-                            View Details
-                          </Button>
-                        )}
+                      <div className="text-lg font-semibold">
+                        {match.homeTeam}
+                      </div>
+                      <div className="text-lg font-semibold">
+                        {match.awayTeam}
+                      </div>
+                      <div className="text-sm text-muted-foreground flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {match.venue}
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                  </Card>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Recent Results */}
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold text-foreground">
+              Recent Results
+            </h3>
+            <div className="space-y-3">
+              {recentResults.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">No recent results</p>
+              ) : (
+                recentResults.slice(0, 5).map((match) => (
+                  <Card key={match.id} className="p-4 hover:bg-accent/50 transition-colors">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground font-medium">{match.competition}</span>
+                        <span className="text-sm font-medium">{formatDate(match.date)}</span>
+                      </div>
+                      <div className="text-lg font-semibold">
+                        {match.homeTeam}
+                      </div>
+                      <div className="text-lg font-semibold">
+                        {match.awayTeam}
+                      </div>
+                      <div className="text-sm text-muted-foreground flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {match.venue}
+                      </div>
+                      {match.result && (
+                        <div className="text-sm font-medium text-primary bg-primary/10 rounded px-2 py-1">
+                          {match.result}
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="text-center">
+        <Button variant="outline" asChild>
+          <a href="#" className="text-primary hover:text-primary-foreground">
+            View all matches
+          </a>
+        </Button>
       </div>
 
-      {/* API Integration Note */}
-      <Card className="border-dashed">
-        <CardContent className="p-6 text-center">
-          <h3 className="font-semibold text-lg mb-2">Live Data Integration</h3>
-          <p className="text-muted-foreground mb-4">
-            This component is ready to integrate with the Play Cricket API. To enable live data:
-          </p>
-          <div className="space-y-2 text-sm text-left max-w-2xl mx-auto">
-            <p>1. Obtain your Club ID from Play Cricket (Kingston Bagpuize CC)</p>
-            <p>2. Request API access from Play Cricket</p>
-            <p>3. Configure the API token in your environment</p>
-            <p>4. Enable automatic data refresh</p>
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="mt-4"
-            onClick={() => window.open('https://play-cricket.ecb.co.uk/hc/en-us/sections/360000978518-API-Experienced-Developers-Only', '_blank')}
-          >
-            View API Documentation
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="text-center text-sm text-muted-foreground">
+        <p>Match data will be integrated with Play Cricket API for live updates.</p>
+      </div>
     </div>
   );
 };
