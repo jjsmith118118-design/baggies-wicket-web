@@ -11,7 +11,7 @@ const Navigation = () => {
     { name: 'Home', path: '/', external: false },
     { name: 'About Us', path: '/about', external: false },
     { name: 'Fixtures & Results', path: 'https://kingstonbagpuize.play-cricket.com/Matches', external: true },
-    { name: 'Play Cricket', path: 'https://kingstonbagpuize.play-cricket.com/home', external: true },
+    { name: 'Club Store', path: 'https://www.serioussport.co.uk/teamstores/kingston-bagpuize', external: true },
     { name: 'Contact Us', path: '/contact', external: false },
   ];
 
