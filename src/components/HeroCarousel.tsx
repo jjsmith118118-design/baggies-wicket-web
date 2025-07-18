@@ -83,9 +83,9 @@ const HeroCarousel = () => {
     setCurrentSlide(index);
   };
 
-  // Auto-advance slides every 5 seconds
+  // Auto-advance slides every 15 seconds
   useEffect(() => {
-    const interval = setInterval(nextSlide, 5000);
+    const interval = setInterval(nextSlide, 15000);
     return () => clearInterval(interval);
   }, []);
 
