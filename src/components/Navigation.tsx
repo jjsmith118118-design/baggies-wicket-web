@@ -22,8 +22,13 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="text-2xl font-bold text-primary">Kingston Bagpuize CC</div>
+          <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/a5ad1992-fbda-44b7-a120-24dc8f17ed02.png" 
+              alt="Kingston Bagpuize Cricket Club Logo" 
+              className="h-12 w-12"
+            />
+            <div className="text-xl font-bold text-primary">Kingston Bagpuize CC</div>
           </Link>
 
           {/* Desktop Navigation */}
