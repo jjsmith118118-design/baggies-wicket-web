@@ -8,6 +8,7 @@ interface Slide {
   title: string;
   subtitle: string;
   description: string;
+  image: string;
   primaryAction: {
     text: string;
     href: string;
@@ -26,6 +27,7 @@ const slides: Slide[] = [
     title: "Kingston Bagpuize Cricket Club",
     subtitle: "Where Passion Meets Tradition",
     description: "Welcome to our community cricket club where passion meets tradition. Join us for exciting cricket in the heart of Oxfordshire.",
+    image: "/lovable-uploads/87b0f990-614a-4670-8520-e81472557d2d.png",
     primaryAction: {
       text: "Join the Club",
       href: "https://kingstonbagpuize.play-cricket.com/home",
@@ -41,6 +43,7 @@ const slides: Slide[] = [
     title: "Competitive Cricket",
     subtitle: "Challenge Yourself",
     description: "Take part in regular league matches and tournaments. Test your skills against local teams in a competitive yet friendly environment.",
+    image: "/lovable-uploads/dffb4243-1e34-4ab3-bf62-14c6db8c14a9.png",
     primaryAction: {
       text: "View Fixtures",
       href: "/#fixtures-results"
@@ -55,6 +58,7 @@ const slides: Slide[] = [
     title: "Training & Development",
     subtitle: "Improve Your Game",
     description: "Weekly training sessions with experienced coaches. Perfect for players of all skill levels looking to develop their cricket abilities.",
+    image: "/lovable-uploads/1fd3c9ea-3af8-45a9-9050-22734753bfc7.png",
     primaryAction: {
       text: "Start Training",
       href: "https://kingstonbagpuize.play-cricket.com/home",
@@ -114,68 +118,148 @@ const HeroCarousel = () => {
         </button>
 
         {/* Slide content */}
-        <div className="text-center animate-fade-in">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            {currentSlideData.title}
-          </h1>
-          <p className="text-xl md:text-2xl mb-6 font-medium text-primary-foreground/90">
-            {currentSlideData.subtitle}
-          </p>
-          <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-primary-foreground/80">
-            {currentSlideData.description}
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            {currentSlideData.primaryAction.external ? (
-              <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                <a 
-                  href={currentSlideData.primaryAction.href} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  {currentSlideData.primaryAction.text}
-                </a>
-              </Button>
-            ) : currentSlideData.primaryAction.href.includes('#') ? (
-              <Button 
-                size="lg" 
-                variant="secondary" 
-                className="text-lg px-8 py-3"
-                onClick={() => {
-                  const elementId = currentSlideData.primaryAction.href.replace('/#', '');
-                  const element = document.getElementById(elementId);
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
-              >
-                {currentSlideData.primaryAction.text}
-              </Button>
-            ) : (
-              <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                <Link to={currentSlideData.primaryAction.href}>
-                  {currentSlideData.primaryAction.text}
-                </Link>
-              </Button>
-            )}
+        <div className="animate-fade-in">
+          {/* Mobile layout - text centered */}
+          <div className="text-center lg:hidden">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+              {currentSlideData.title}
+            </h1>
+            <p className="text-xl md:text-2xl mb-6 font-medium text-primary-foreground/90">
+              {currentSlideData.subtitle}
+            </p>
+            <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-primary-foreground/80">
+              {currentSlideData.description}
+            </p>
             
-            {currentSlideData.secondaryAction.external ? (
-              <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                <a 
-                  href={currentSlideData.secondaryAction.href} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              {currentSlideData.primaryAction.external ? (
+                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                  <a 
+                    href={currentSlideData.primaryAction.href} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    {currentSlideData.primaryAction.text}
+                  </a>
+                </Button>
+              ) : currentSlideData.primaryAction.href.includes('#') ? (
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  className="text-lg px-8 py-3"
+                  onClick={() => {
+                    const elementId = currentSlideData.primaryAction.href.replace('/#', '');
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
                 >
-                  {currentSlideData.secondaryAction.text}
-                </a>
-              </Button>
-            ) : (
-              <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                <Link to={currentSlideData.secondaryAction.href}>
-                  {currentSlideData.secondaryAction.text}
-                </Link>
-              </Button>
-            )}
+                  {currentSlideData.primaryAction.text}
+                </Button>
+              ) : (
+                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                  <Link to={currentSlideData.primaryAction.href}>
+                    {currentSlideData.primaryAction.text}
+                  </Link>
+                </Button>
+              )}
+              
+              {currentSlideData.secondaryAction.external ? (
+                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                  <a 
+                    href={currentSlideData.secondaryAction.href} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    {currentSlideData.secondaryAction.text}
+                  </a>
+                </Button>
+              ) : (
+                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                  <Link to={currentSlideData.secondaryAction.href}>
+                    {currentSlideData.secondaryAction.text}
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Desktop layout - text and image side by side */}
+          <div className="hidden lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
+            <div className="text-left">
+              <h1 className="text-4xl xl:text-6xl font-bold mb-4">
+                {currentSlideData.title}
+              </h1>
+              <p className="text-xl xl:text-2xl mb-6 font-medium text-primary-foreground/90">
+                {currentSlideData.subtitle}
+              </p>
+              <p className="text-lg xl:text-xl mb-8 text-primary-foreground/80">
+                {currentSlideData.description}
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                {currentSlideData.primaryAction.external ? (
+                  <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                    <a 
+                      href={currentSlideData.primaryAction.href} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      {currentSlideData.primaryAction.text}
+                    </a>
+                  </Button>
+                ) : currentSlideData.primaryAction.href.includes('#') ? (
+                  <Button 
+                    size="lg" 
+                    variant="secondary" 
+                    className="text-lg px-8 py-3"
+                    onClick={() => {
+                      const elementId = currentSlideData.primaryAction.href.replace('/#', '');
+                      const element = document.getElementById(elementId);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
+                  >
+                    {currentSlideData.primaryAction.text}
+                  </Button>
+                ) : (
+                  <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                    <Link to={currentSlideData.primaryAction.href}>
+                      {currentSlideData.primaryAction.text}
+                    </Link>
+                  </Button>
+                )}
+                
+                {currentSlideData.secondaryAction.external ? (
+                  <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                    <a 
+                      href={currentSlideData.secondaryAction.href} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      {currentSlideData.secondaryAction.text}
+                    </a>
+                  </Button>
+                ) : (
+                  <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                    <Link to={currentSlideData.secondaryAction.href}>
+                      {currentSlideData.secondaryAction.text}
+                    </Link>
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Cricket image with rounded corners matching Card components */}
+            <div className="flex justify-center">
+              <img 
+                src={currentSlideData.image}
+                alt="Cricket action at Kingston Bagpuize Cricket Club"
+                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
+              />
+            </div>
           </div>
         </div>
 
