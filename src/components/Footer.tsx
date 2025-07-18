@@ -61,10 +61,15 @@ const Footer = () => {
                 About Us
               </Link>
               <a 
-                href="https://kingstonbagpuize.play-cricket.com/Matches" 
-                target="_blank" 
-                rel="noopener noreferrer"
+                href="/#fixtures-results"
                 className="block text-sm opacity-90 hover:opacity-100 transition-opacity"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById('fixtures-results');
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
               >
                 Fixtures & Results
               </a>
