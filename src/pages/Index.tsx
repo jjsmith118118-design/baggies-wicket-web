@@ -77,9 +77,9 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-3">
-              <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">
+              <Link to="/contact">
                 Become a Member <ArrowRight className="ml-2 h-5 w-5" />
-              </a>
+              </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3">
               <Link to="/contact">Contact Us</Link>
