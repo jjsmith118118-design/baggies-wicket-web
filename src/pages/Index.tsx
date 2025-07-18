@@ -4,12 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Users, Trophy, MapPin, ArrowRight } from 'lucide-react';
 import HeroCarousel from '@/components/HeroCarousel';
 import Footer from '@/components/Footer';
+import FixturesResults from '@/components/FixturesResults';
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Carousel Section */}
       <HeroCarousel />
+
+      {/* Fixtures & Results Section */}
+      <section className="py-16 bg-accent/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FixturesResults />
+        </div>
+      </section>
 
       {/* Features Section */}
       <section className="py-16">
