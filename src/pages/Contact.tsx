@@ -63,19 +63,6 @@ const Contact = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <Phone className="h-6 w-6 text-primary mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-foreground mb-2">Phone</h3>
-                        <p className="text-muted-foreground">
-                          01865 820XXX
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
 
                 <Card>
                   <CardContent className="pt-6">
