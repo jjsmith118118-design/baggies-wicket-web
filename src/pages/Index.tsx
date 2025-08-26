@@ -2,13 +2,51 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Users, Trophy, MapPin, ArrowRight } from 'lucide-react';
-import HeroCarousel from '@/components/HeroCarousel';
 import Footer from '@/components/Footer';
 import FixturesResults from '@/components/FixturesResults';
 const Index = () => {
   return <div className="min-h-screen bg-background">
-      {/* Hero Carousel Section */}
-      <HeroCarousel />
+      {/* Hero Section 1 - Kingston Bagpuize Cricket Club */}
+      <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                Kingston Bagpuize Cricket Club
+              </h1>
+              <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
+                Where Passion Meets Tradition
+              </p>
+              <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
+                Welcome to our community cricket club where passion meets tradition. Join us for exciting cricket in the heart of Oxfordshire.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                  <a 
+                    href="https://kingstonbagpuize.play-cricket.com/home" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    Join the Club
+                  </a>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground/20 text-maroon-foreground hover:bg-maroon-foreground/10">
+                  <Link to="/about">Learn More</Link>
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <img 
+                src="/lovable-uploads/070ca7f0-f8c8-47f5-b12f-2406b86bda16.png"
+                alt="Team huddle at Kingston Bagpuize Cricket Club"
+                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
       <section className="py-16">
@@ -61,10 +99,98 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Hero Section 2 - Competitive Cricket */}
+      <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="flex justify-center lg:order-1">
+              <img 
+                src="/lovable-uploads/3c2fec56-c330-4e5e-b23d-cc04456fcedd.png"
+                alt="Competitive cricket action"
+                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
+              />
+            </div>
+            
+            <div className="text-center lg:text-left lg:order-2">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                Competitive Cricket
+              </h1>
+              <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
+                Challenge Yourself
+              </p>
+              <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
+                Take part in regular league matches and tournaments. Test your skills against local teams in a competitive yet friendly environment.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  className="text-lg px-8 py-3"
+                  onClick={() => {
+                    const element = document.getElementById('fixtures-results');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                >
+                  View Fixtures
+                </Button>
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground/20 text-maroon-foreground hover:bg-maroon-foreground/10">
+                  <Link to="/contact">Contact Us</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Fixtures & Results Section */}
       <section id="fixtures-results" className="py-16 bg-accent/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FixturesResults />
+        </div>
+      </section>
+
+      {/* Hero Section 3 - Training & Development */}
+      <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                Training & Development
+              </h1>
+              <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
+                Improve Your Game
+              </p>
+              <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
+                Weekly training sessions with experienced coaches. Perfect for players of all skill levels looking to develop their cricket abilities.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                  <a 
+                    href="https://kingstonbagpuize.play-cricket.com/home" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    Start Training
+                  </a>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground/20 text-maroon-foreground hover:bg-maroon-foreground/10">
+                  <Link to="/about">About Us</Link>
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <img 
+                src="/lovable-uploads/1736e5d6-fbea-446f-b8f7-d589941289bb.png"
+                alt="Cricket training session"
+                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
+              />
+            </div>
+          </div>
         </div>
       </section>
 

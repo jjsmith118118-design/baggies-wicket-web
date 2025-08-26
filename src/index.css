@@ -37,6 +37,8 @@
     --sidebar-accent-foreground: 220 8.9% 46.1%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 10.6% 64.9%;
+    --maroon: 0 50% 25%;
+    --maroon-foreground: 0 0% 98%;
   }
 
   .dark {
@@ -72,6 +74,8 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 10.6% 64.9%;
+    --maroon: 0 60% 20%;
+    --maroon-foreground: 0 0% 98%;
   }
 }
 
