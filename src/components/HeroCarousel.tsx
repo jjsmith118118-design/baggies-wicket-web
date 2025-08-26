@@ -27,7 +27,7 @@ const slides: Slide[] = [
     title: "Kingston Bagpuize Cricket Club",
     subtitle: "Where Passion Meets Tradition",
     description: "Welcome to our community cricket club where passion meets tradition. Join us for exciting cricket in the heart of Oxfordshire.",
-    image: "/lovable-uploads/8fa6939c-9009-4566-8459-eb941618643f.png",
+    image: "/lovable-uploads/070ca7f0-f8c8-47f5-b12f-2406b86bda16.png",
     primaryAction: {
       text: "Join the Club",
       href: "https://kingstonbagpuize.play-cricket.com/home",
