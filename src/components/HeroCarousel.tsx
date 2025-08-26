@@ -27,7 +27,7 @@ const slides: Slide[] = [
     title: "Kingston Bagpuize Cricket Club",
     subtitle: "Where Passion Meets Tradition",
     description: "Welcome to our community cricket club where passion meets tradition. Join us for exciting cricket in the heart of Oxfordshire.",
-    image: "/lovable-uploads/1fd3c9ea-3af8-45a9-9050-22734753bfc7.png",
+    image: "/lovable-uploads/8fa6939c-9009-4566-8459-eb941618643f.png",
     primaryAction: {
       text: "Join the Club",
       href: "https://kingstonbagpuize.play-cricket.com/home",
@@ -43,7 +43,7 @@ const slides: Slide[] = [
     title: "Competitive Cricket",
     subtitle: "Challenge Yourself",
     description: "Take part in regular league matches and tournaments. Test your skills against local teams in a competitive yet friendly environment.",
-    image: "/lovable-uploads/dffb4243-1e34-4ab3-bf62-14c6db8c14a9.png",
+    image: "/lovable-uploads/3c2fec56-c330-4e5e-b23d-cc04456fcedd.png",
     primaryAction: {
       text: "View Fixtures",
       href: "/#fixtures-results"
@@ -58,7 +58,7 @@ const slides: Slide[] = [
     title: "Training & Development",
     subtitle: "Improve Your Game",
     description: "Weekly training sessions with experienced coaches. Perfect for players of all skill levels looking to develop their cricket abilities.",
-    image: "/lovable-uploads/87b0f990-614a-4670-8520-e81472557d2d.png",
+    image: "/lovable-uploads/1736e5d6-fbea-446f-b8f7-d589941289bb.png",
     primaryAction: {
       text: "Start Training",
       href: "https://kingstonbagpuize.play-cricket.com/home",
