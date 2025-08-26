@@ -18,7 +18,7 @@ const Index = () => {
                 Where Passion Meets Tradition
               </p>
               <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
-                Welcome to our community cricket club where passion meets tradition. Join us for exciting cricket in the heart of Oxfordshire.
+                Welcome to KBCC, our home of cricket in Oxfordshire. We currently operate 3 league, 2 T20 league, a women's and friendly XI.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
