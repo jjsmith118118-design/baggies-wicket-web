@@ -31,7 +31,7 @@ const Index = () => {
                     Join the Club
                   </a>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground/20 text-maroon-foreground hover:bg-maroon-foreground/10">
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
                   <Link to="/about">Learn More</Link>
                 </Button>
               </div>
@@ -136,7 +136,7 @@ const Index = () => {
                 >
                   View Fixtures
                 </Button>
-                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground/20 text-maroon-foreground hover:bg-maroon-foreground/10">
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
                   <Link to="/contact">Contact Us</Link>
                 </Button>
               </div>
@@ -177,7 +177,7 @@ const Index = () => {
                     Start Training
                   </a>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground/20 text-maroon-foreground hover:bg-maroon-foreground/10">
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
                   <Link to="/about">About Us</Link>
                 </Button>
               </div>
