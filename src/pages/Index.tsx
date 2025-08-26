@@ -24,7 +24,7 @@ const Index = () => {
                 <CardTitle>Community</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">A welcoming club that brings together cricket enthusiasts of all ages and abilities.</p>
+                <p className="text-muted-foreground">A welcoming club that brings together cricket enthusiasts of all ages and abilities. We've add</p>
               </CardContent>
             </Card>
 
@@ -34,7 +34,7 @@ const Index = () => {
                 <CardTitle>Competitive Cricket</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">KBCC continues to climb up the leagues in all formats, providing </p>
+                <p className="text-muted-foreground">KBCC continues to climb up the leagues in all formats</p>
               </CardContent>
             </Card>
 
@@ -44,7 +44,7 @@ const Index = () => {
                 <CardTitle>Regular Fixtures</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">With over 200 fixtures in 2024, you'll be sure to find cricket that suits your diary.</p>
+                <p className="text-muted-foreground">With over 180 fixtures in 2024, you'll be sure to find cricket that suits your schedule.</p>
               </CardContent>
             </Card>
 
@@ -54,7 +54,7 @@ const Index = () => {
                 <CardTitle>Facilities</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">We're proud to be considered one of the premier grounds in Oxfordshire, as voted by our visiting opposition. </p>
+                <p className="text-muted-foreground">We're proud to be in the top 5 grounds in Oxfordshire, as voted by our visiting opposition. </p>
               </CardContent>
             </Card>
           </div>
