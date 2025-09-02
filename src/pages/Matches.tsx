@@ -73,16 +73,18 @@ const Matches = () => {
         status: match.status === 'L' ? 'live' : 
                 match.result ? 'completed' : 'scheduled',
         result: match.result_description || match.result,
-        teamCategory: 'senior' as const, // Default to senior, could be enhanced based on team name
+        teamCategory: 'senior' as const, // Default to senior, could be enhanced based on match name
         homeFormGuide: undefined,
         awayFormGuide: undefined
       })) || [];
 
-      setMatches(mappedMatches);
+      // Filter matches by the current week's date range
+      const filteredMatches = filterMatchesByWeek(mappedMatches);
+      setMatches(filteredMatches);
       
       toast({
         title: "Fixtures Loaded",
-        description: `Loaded ${mappedMatches.length} fixtures from Play Cricket`,
+        description: `Loaded ${filteredMatches.length} fixtures for selected week from Play Cricket`,
         duration: 3000,
       });
     } catch (error) {
@@ -128,11 +130,13 @@ const Matches = () => {
         awayFormGuide: undefined
       })) || [];
 
-      setMatches(mappedMatches);
+      // Filter results by the previous week's date range
+      const filteredMatches = filterMatchesByWeek(mappedMatches);
+      setMatches(filteredMatches);
       
       toast({
         title: "Results Loaded",
-        description: `Loaded ${mappedMatches.length} previous results from Play Cricket`,
+        description: `Loaded ${filteredMatches.length} results for selected week from Play Cricket`,
         duration: 3000,
       });
     } catch (error) {
@@ -239,11 +243,22 @@ const Matches = () => {
 
     return {
       start: format(weekStart, 'EEE d MMM'),
-      end: format(weekEnd, 'EEE d MMM')
+      end: format(weekEnd, 'EEE d MMM'),
+      startDate: weekStart,
+      endDate: weekEnd
     };
   };
 
   const weekDates = getCurrentWeekDates();
+
+  const filterMatchesByWeek = (matches: Match[]) => {
+    const { startDate, endDate } = weekDates;
+    
+    return matches.filter(match => {
+      const matchDate = new Date(match.date);
+      return matchDate >= startDate && matchDate <= endDate;
+    });
+  };
 
   const groupedMatches = groupMatchesByDate(filteredMatches);
 
