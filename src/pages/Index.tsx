@@ -14,9 +14,6 @@ const Index = () => {
               <h1 className="text-4xl md:text-6xl font-bold mb-4">
                 Kingston Bagpuize Cricket Club
               </h1>
-              <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
-                Where Passion Meets Tradition
-              </p>
               <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
                 Welcome to KBCC, our home of cricket in Oxfordshire. We currently operate 3 league, 2 T20 league, a women's and friendly XI.
               </p>
