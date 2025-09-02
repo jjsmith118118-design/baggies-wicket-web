@@ -33,6 +33,70 @@ const Matches = () => {
   const [selectedTeamCategory, setSelectedTeamCategory] = useState<'all' | 'senior' | 'junior' | 'women'>('all');
   const { toast } = useToast();
 
+  // Play Cricket API credentials
+  const SITE_ID = '3758';
+  const API_TOKEN = '33239cdb5dc60ba5c114a5dd885a8200';
+  const SEASON = '2024'; // Current season
+
+  useEffect(() => {
+    if (weekOffset === -1) {
+      fetchPreviousWeekResults();
+    } else {
+      // Reset to default matches for current/next week
+      setMatches(liveMatches);
+    }
+  }, [weekOffset]);
+
+  const fetchPreviousWeekResults = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://play-cricket.com/api/v2/result_summary.json?site_id=${SITE_ID}&season=${SEASON}&api_token=${API_TOKEN}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch results');
+      }
+
+      const data = await response.json();
+      
+      // Map Play Cricket API response to our Match interface
+      const mappedMatches: Match[] = data.result_summary?.map((result: any) => ({
+        id: result.id?.toString() || Math.random().toString(),
+        date: result.match_date || new Date().toISOString().split('T')[0],
+        time: result.match_time || '14:30',
+        homeTeam: result.home_club_name || 'Home Team',
+        awayTeam: result.away_club_name || 'Away Team',
+        venue: result.ground_name || 'Ground',
+        competition: result.competition_name || 'League',
+        status: 'completed' as const,
+        result: result.result_description || result.result || 'Result unavailable',
+        teamCategory: 'senior' as const, // Default to senior, could be enhanced based on team name
+        homeFormGuide: undefined,
+        awayFormGuide: undefined
+      })) || [];
+
+      setMatches(mappedMatches);
+      
+      toast({
+        title: "Results Loaded",
+        description: `Loaded ${mappedMatches.length} previous results from Play Cricket`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error fetching Play Cricket results:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load results from Play Cricket API",
+        variant: "destructive",
+        duration: 3000,
+      });
+      setMatches(liveMatches);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchLiveData = async () => {
     setLoading(true);
     try {
