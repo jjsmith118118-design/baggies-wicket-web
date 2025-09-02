@@ -131,7 +131,7 @@ const Contact = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
-              <img src="/lovable-uploads/940df71c-ecca-45d0-8757-22ca8e66ee5a.png" alt="Cricket match in action at Kingston Bagpuize Cricket Club" className="rounded-lg shadow-lg w-full h-auto" />
+              <img src="/lovable-uploads/3b272bec-bbc6-4e1c-b46b-f7369f00e252.png" alt="Cricket bowler in action at Kingston Bagpuize Cricket Club" className="rounded-lg shadow-lg w-full h-auto" />
             </div>
             <div className="order-1 lg:order-2 text-center lg:text-left">
               <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Don't leave it too late.</h2>
