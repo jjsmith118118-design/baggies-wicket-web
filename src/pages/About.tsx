@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Trophy, Calendar, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 const About = () => {
   return <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -72,7 +73,9 @@ const About = () => {
               <CardContent className="pt-6">
                 <Users className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">All Ages</h3>
-                <p className="text-muted-foreground">KBCC operates two club grounds in the local area for our weekend league cricket</p>
+                <p className="text-muted-foreground">
+                  Junior cricket begins at U9s! <Link to="/contact" className="text-primary hover:underline">Contact us</Link> to get started.
+                </p>
               </CardContent>
             </Card>
             
