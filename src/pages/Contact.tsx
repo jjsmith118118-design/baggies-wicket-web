@@ -44,7 +44,7 @@ const Contact = () => {
                     <p className="text-muted-foreground">
                       Kingston Bagpuize Cricket Ground<br />
                       Kingston Bagpuize, Oxfordshire<br />
-                      OX13 5AP
+                      OX13 5GD
                     </p>
                   </div>
                 </div>
