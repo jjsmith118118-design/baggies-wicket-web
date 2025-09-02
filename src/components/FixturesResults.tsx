@@ -21,77 +21,8 @@ interface Match {
   awayFormGuide?: string[];
 }
 
-// Real data extracted from Kingston Bagpuize Play Cricket
-const liveMatches: Match[] = [
-  {
-    id: '6909605',
-    date: '2025-07-19',
-    time: '12:30',
-    homeTeam: 'Kingston Bagpuize CC 1st XI',
-    awayTeam: 'Cumnor CC 2nd XI',
-    venue: 'The Kingston Bagpuize Sportsfield',
-    competition: 'League',
-    status: 'scheduled',
-    teamCategory: 'senior',
-    homeFormGuide: ['W', 'W', 'W', 'W', 'W'],
-    awayFormGuide: ['L', 'D', 'W', 'D', 'D']
-  },
-  {
-    id: '6909876',
-    date: '2025-07-19',
-    time: '13:00',
-    homeTeam: 'Oxford Downs CC 3rd XI',
-    awayTeam: 'Kingston Bagpuize CC 2nd XI',
-    venue: 'Away',
-    competition: 'League',
-    status: 'scheduled',
-    teamCategory: 'senior',
-    homeFormGuide: ['L', 'W', 'L', 'W', 'D'],
-    awayFormGuide: ['L', 'L', 'L', 'C', 'L']
-  },
-  {
-    id: '6810596',
-    date: '2025-07-20',
-    time: '10:00',
-    homeTeam: 'Witney Mills CC Under 11',
-    awayTeam: 'Kingston Bagpuize CC Under 11',
-    venue: 'Away',
-    competition: 'Junior League',
-    status: 'scheduled',
-    teamCategory: 'junior',
-    homeFormGuide: ['W', 'W', 'L', 'W', 'W'],
-    awayFormGuide: ['L', 'W', 'L', 'L', 'T']
-  },
-  // Recent results
-  {
-    id: 'result1',
-    date: '2025-07-12',
-    time: '14:00',
-    homeTeam: 'Kingston Bagpuize CC 3rd XI',
-    awayTeam: 'Maori Oxshott CC 2nd XI',
-    venue: 'The Kingston Bagpuize Sportsfield',
-    competition: 'League',
-    status: 'completed',
-    result: 'Kingston Bagpuize CC won by 4 runs',
-    teamCategory: 'senior',
-    homeFormGuide: ['W', 'W', 'W', 'L', 'W'],
-    awayFormGuide: ['L', 'L', 'W', 'D', 'L']
-  },
-  {
-    id: 'result2',
-    date: '2025-07-12',
-    time: '13:00',
-    homeTeam: 'Outlaws 2.0 CC 1st XI',
-    awayTeam: 'Kingston Bagpuize CC 4th XI',
-    venue: 'Away',
-    competition: 'League',
-    status: 'completed',
-    result: 'Outlaws 2.0 CC won by 42 runs',
-    teamCategory: 'senior',
-    homeFormGuide: ['W', 'W', 'W', 'W', 'L'],
-    awayFormGuide: ['L', 'L', 'W', 'L', 'L']
-  }
-];
+// Empty array - no sample data, ready for real API integration
+const liveMatches: Match[] = [];
 
 const FixturesResults = () => {
   const [matches, setMatches] = useState<Match[]>(liveMatches);

@@ -21,87 +21,8 @@ interface Match {
 }
 
 
-// Real data extracted from Kingston Bagpuize Play Cricket
-const liveMatches: Match[] = [
-  {
-    id: '6909605',
-    date: '2025-07-19',
-    time: '12:30',
-    homeTeam: 'Kingston Bagpuize CC 1st XI',
-    awayTeam: 'Cumnor CC 2nd XI',
-    venue: 'The Kingston Bagpuize Sportsfield',
-    competition: 'League',
-    status: 'scheduled',
-    teamCategory: 'senior',
-    homeFormGuide: ['W', 'W', 'W', 'W', 'W'],
-    awayFormGuide: ['L', 'D', 'W', 'D', 'D']
-  },
-  {
-    id: '6909876',
-    date: '2025-07-19',
-    time: '13:00',
-    homeTeam: 'Oxford Downs CC 3rd XI',
-    awayTeam: 'Kingston Bagpuize CC 2nd XI',
-    venue: 'Away',
-    competition: 'League',
-    status: 'scheduled',
-    teamCategory: 'senior',
-    homeFormGuide: ['L', 'W', 'L', 'W', 'D'],
-    awayFormGuide: ['L', 'L', 'L', 'C', 'L']
-  },
-  {
-    id: '6910596',
-    date: '2025-07-19',
-    time: '13:00',
-    homeTeam: 'Kingston Bagpuize CC 3rd XI',
-    awayTeam: 'Steventon CC 2nd XI',
-    venue: 'The Kingston Bagpuize Sportsfield',
-    competition: 'League',
-    status: 'scheduled',
-    teamCategory: 'senior',
-    homeFormGuide: ['L', 'W', 'W', 'W', 'W'],
-    awayFormGuide: ['L', 'D', 'L', 'L', 'D']
-  },
-  {
-    id: '6809853',
-    date: '2025-07-20',
-    time: '10:00',
-    homeTeam: 'Witney Mills CC Under 11',
-    awayTeam: 'Kingston Bagpuize CC Under 11',
-    venue: 'Away',
-    competition: 'Junior League',
-    status: 'scheduled',
-    teamCategory: 'junior',
-    homeFormGuide: ['W', 'W', 'L', 'W', 'W'],
-    awayFormGuide: ['L', 'W', 'L', 'L', 'T']
-  },
-  {
-    id: '6819114',
-    date: '2025-07-22',
-    time: '18:00',
-    homeTeam: 'Wolvercote CC Under 15',
-    awayTeam: 'Kingston Bagpuize CC Under 15',
-    venue: 'Away',
-    competition: 'Junior League',
-    status: 'scheduled',
-    teamCategory: 'junior',
-    homeFormGuide: ['W', 'W', 'W', 'W', 'W'],
-    awayFormGuide: ['L', 'C', 'W', 'W', 'C']
-  },
-  {
-    id: '6816190',
-    date: '2025-07-24',
-    time: '18:00',
-    homeTeam: 'Steventon CC Under 13',
-    awayTeam: 'Kingston Bagpuize CC Under 13',
-    venue: 'Away',
-    competition: 'Junior League',
-    status: 'scheduled',
-    teamCategory: 'junior',
-    homeFormGuide: ['L', 'L', 'L', 'C', 'L'],
-    awayFormGuide: ['L', 'W', 'C', 'W', 'L']
-  }
-];
+// Empty array - no sample data, ready for real API integration
+const liveMatches: Match[] = [];
 
 
 const Matches = () => {
