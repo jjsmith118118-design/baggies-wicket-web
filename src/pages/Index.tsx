@@ -14,35 +14,25 @@ const Index = () => {
               <h1 className="text-4xl md:text-6xl font-bold mb-4">
                 Kingston Bagpuize Cricket Club
               </h1>
-              <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
-                Where Passion Meets Tradition
-              </p>
+              
               <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
                 Welcome to KBCC, our home of cricket in Oxfordshire. We currently operate 3 league, 2 T20 league, a women's and friendly XI.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                  <a 
-                    href="https://kingstonbagpuize.play-cricket.com/home" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
+                  <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">
                     Join the Club
                   </a>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
-                  <Link to="/about">Learn More</Link>
+                  
                 </Button>
               </div>
             </div>
 
             <div className="flex justify-center">
-              <img 
-                src="/lovable-uploads/070ca7f0-f8c8-47f5-b12f-2406b86bda16.png"
-                alt="Team huddle at Kingston Bagpuize Cricket Club"
-                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
-              />
+              <img src="/lovable-uploads/070ca7f0-f8c8-47f5-b12f-2406b86bda16.png" alt="Team huddle at Kingston Bagpuize Cricket Club" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
         </div>
@@ -104,11 +94,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="flex justify-center lg:order-1">
-              <img 
-                src="/lovable-uploads/3c2fec56-c330-4e5e-b23d-cc04456fcedd.png"
-                alt="Competitive cricket action"
-                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
-              />
+              <img src="/lovable-uploads/3c2fec56-c330-4e5e-b23d-cc04456fcedd.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
             
             <div className="text-center lg:text-left lg:order-2">
@@ -123,17 +109,14 @@ const Index = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button 
-                  size="lg" 
-                  variant="secondary" 
-                  className="text-lg px-8 py-3"
-                  onClick={() => {
-                    const element = document.getElementById('fixtures-results');
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
-                >
+                <Button size="lg" variant="secondary" className="text-lg px-8 py-3" onClick={() => {
+                const element = document.getElementById('fixtures-results');
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: 'smooth'
+                  });
+                }
+              }}>
                   View Fixtures
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
@@ -153,46 +136,7 @@ const Index = () => {
       </section>
 
       {/* Hero Section 3 - Training & Development */}
-      <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">
-                Training & Development
-              </h1>
-              <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
-                Improve Your Game
-              </p>
-              <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
-                Weekly training sessions with experienced coaches. Perfect for players of all skill levels looking to develop their cricket abilities.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                  <a 
-                    href="https://kingstonbagpuize.play-cricket.com/home" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
-                    Start Training
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
-                  <Link to="/about">About Us</Link>
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex justify-center">
-              <img 
-                src="/lovable-uploads/1736e5d6-fbea-446f-b8f7-d589941289bb.png"
-                alt="Cricket training session"
-                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Call to Action Section */}
       <section className="py-16 bg-accent">
