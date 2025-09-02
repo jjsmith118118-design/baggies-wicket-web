@@ -41,11 +41,63 @@ const Matches = () => {
   useEffect(() => {
     if (weekOffset === -1) {
       fetchPreviousWeekResults();
+    } else if (weekOffset === 0 || weekOffset === 1) {
+      fetchWeekFixtures();
     } else {
-      // Reset to default matches for current/next week
       setMatches(liveMatches);
     }
   }, [weekOffset]);
+
+  const fetchWeekFixtures = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://play-cricket.com/api/v2/matches.json?site_id=${SITE_ID}&season=${SEASON}&api_token=${API_TOKEN}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch fixtures');
+      }
+
+      const data = await response.json();
+      
+      // Map Play Cricket API response to our Match interface
+      const mappedMatches: Match[] = data.matches?.map((match: any) => ({
+        id: match.id?.toString() || Math.random().toString(),
+        date: match.match_date || new Date().toISOString().split('T')[0],
+        time: match.match_time || '14:30',
+        homeTeam: match.home_club_name || 'Home Team',
+        awayTeam: match.away_club_name || 'Away Team',
+        venue: match.ground_name || 'Ground',
+        competition: match.competition_name || 'League',
+        status: match.status === 'L' ? 'live' : 
+                match.result ? 'completed' : 'scheduled',
+        result: match.result_description || match.result,
+        teamCategory: 'senior' as const, // Default to senior, could be enhanced based on team name
+        homeFormGuide: undefined,
+        awayFormGuide: undefined
+      })) || [];
+
+      setMatches(mappedMatches);
+      
+      toast({
+        title: "Fixtures Loaded",
+        description: `Loaded ${mappedMatches.length} fixtures from Play Cricket`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error fetching Play Cricket fixtures:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load fixtures from Play Cricket API",
+        variant: "destructive",
+        duration: 3000,
+      });
+      setMatches(liveMatches);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchPreviousWeekResults = async () => {
     setLoading(true);
