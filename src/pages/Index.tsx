@@ -64,7 +64,7 @@ const Index = () => {
                 <CardTitle>Competitive Cricket</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">KBCC continues to climb up the leagues in all formats. Proud of winners of </p>
+                <p className="text-muted-foreground">KBCC continues to climb up the leagues in all formats. Proud of winners of 5 league titles in 2025</p>
               </CardContent>
             </Card>
 
