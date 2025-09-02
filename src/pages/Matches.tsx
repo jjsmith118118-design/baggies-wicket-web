@@ -155,15 +155,26 @@ const Matches = () => {
         <Card className="mb-6">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <Button variant="ghost" size="sm">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setActiveWeek('previous')}
+              >
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 Previous Week
               </Button>
               <div className="text-center">
-                <h3 className="text-xl font-bold">This Week</h3>
+                <h3 className="text-xl font-bold">
+                  {activeWeek === 'previous' ? 'Previous Week' : 
+                   activeWeek === 'next' ? 'Next Week' : 'This Week'}
+                </h3>
                 <p className="text-muted-foreground">Mon 14 Jul - Sun 20 Jul</p>
               </div>
-              <Button variant="ghost" size="sm">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setActiveWeek('next')}
+              >
                 Next Week
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
