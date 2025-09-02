@@ -36,7 +36,7 @@ const Matches = () => {
   // Play Cricket API credentials
   const SITE_ID = '3758';
   const API_TOKEN = '33239cdb5dc60ba5c114a5dd885a8200';
-  const SEASON = '2024'; // Current season
+  const SEASON = '2025'; // Updated to 2025 season
 
   useEffect(() => {
     if (weekOffset === -1) {
