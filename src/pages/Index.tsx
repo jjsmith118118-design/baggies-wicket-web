@@ -107,15 +107,8 @@ const Index = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button size="lg" variant="secondary" className="text-lg px-8 py-3" onClick={() => {
-                const element = document.getElementById('fixtures-results');
-                if (element) {
-                  element.scrollIntoView({
-                    behavior: 'smooth'
-                  });
-                }
-              }}>
-                  View Fixtures
+                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                  <Link to="/contact">Contact Us</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
                   <Link to="/contact">Contact Us</Link>
