@@ -72,7 +72,7 @@ const About = () => {
               <CardContent className="pt-6">
                 <Users className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">All Ages</h3>
-                <p className="text-muted-foreground">KBCC's junior cricket starts at U9s all to the way to some of our senior playing members in the 70+ category</p>
+                <p className="text-muted-foreground">KBCC operates two club grounds in the local area for our weekend league cricket</p>
               </CardContent>
             </Card>
             
