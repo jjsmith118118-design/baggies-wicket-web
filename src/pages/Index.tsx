@@ -23,26 +23,18 @@ const Index = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                  <a 
-                    href="https://kingstonbagpuize.play-cricket.com/home" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
+                  <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">
                     Join the Club
                   </a>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
-                  <Link to="/about">Learn More</Link>
+                  
                 </Button>
               </div>
             </div>
 
             <div className="flex justify-center">
-              <img 
-                src="/lovable-uploads/070ca7f0-f8c8-47f5-b12f-2406b86bda16.png"
-                alt="Team huddle at Kingston Bagpuize Cricket Club"
-                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
-              />
+              <img src="/lovable-uploads/070ca7f0-f8c8-47f5-b12f-2406b86bda16.png" alt="Team huddle at Kingston Bagpuize Cricket Club" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
         </div>
@@ -104,11 +96,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="flex justify-center lg:order-1">
-              <img 
-                src="/lovable-uploads/3c2fec56-c330-4e5e-b23d-cc04456fcedd.png"
-                alt="Competitive cricket action"
-                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
-              />
+              <img src="/lovable-uploads/3c2fec56-c330-4e5e-b23d-cc04456fcedd.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
             
             <div className="text-center lg:text-left lg:order-2">
@@ -123,17 +111,14 @@ const Index = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button 
-                  size="lg" 
-                  variant="secondary" 
-                  className="text-lg px-8 py-3"
-                  onClick={() => {
-                    const element = document.getElementById('fixtures-results');
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
-                >
+                <Button size="lg" variant="secondary" className="text-lg px-8 py-3" onClick={() => {
+                const element = document.getElementById('fixtures-results');
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: 'smooth'
+                  });
+                }
+              }}>
                   View Fixtures
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
@@ -169,11 +154,7 @@ const Index = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                  <a 
-                    href="https://kingstonbagpuize.play-cricket.com/home" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
+                  <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">
                     Start Training
                   </a>
                 </Button>
@@ -184,11 +165,7 @@ const Index = () => {
             </div>
 
             <div className="flex justify-center">
-              <img 
-                src="/lovable-uploads/1736e5d6-fbea-446f-b8f7-d589941289bb.png"
-                alt="Cricket training session"
-                className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
-              />
+              <img src="/lovable-uploads/1736e5d6-fbea-446f-b8f7-d589941289bb.png" alt="Cricket training session" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
         </div>
