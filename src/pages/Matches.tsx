@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { format, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
+import { format, startOfWeek, endOfWeek, addWeeks } from 'date-fns';
 
 interface Match {
   id: string;
@@ -29,7 +29,7 @@ const liveMatches: Match[] = [];
 const Matches = () => {
   const [matches, setMatches] = useState<Match[]>(liveMatches);
   const [loading, setLoading] = useState(false);
-  const [activeWeek, setActiveWeek] = useState('current');
+  const [weekOffset, setWeekOffset] = useState(0);
   const [selectedTeamCategory, setSelectedTeamCategory] = useState<'all' | 'senior' | 'junior' | 'women'>('all');
   const { toast } = useToast();
 
@@ -118,21 +118,9 @@ const Matches = () => {
 
   const getCurrentWeekDates = () => {
     const now = new Date();
-    let weekStart: Date;
-    
-    switch (activeWeek) {
-      case 'previous':
-        weekStart = startOfWeek(subWeeks(now, 1), { weekStartsOn: 1 });
-        break;
-      case 'next':
-        weekStart = startOfWeek(addWeeks(now, 1), { weekStartsOn: 1 });
-        break;
-      default:
-        weekStart = startOfWeek(now, { weekStartsOn: 1 });
-    }
-    
+    const weekStart = startOfWeek(addWeeks(now, weekOffset), { weekStartsOn: 1 });
     const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
-    
+
     return {
       start: format(weekStart, 'EEE d MMM'),
       end: format(weekEnd, 'EEE d MMM')
@@ -184,22 +172,22 @@ const Matches = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                onClick={() => setActiveWeek('previous')}
+                onClick={() => setWeekOffset((prev) => Math.max(-1, prev - 1))}
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 Previous Week
               </Button>
               <div className="text-center">
                 <h3 className="text-xl font-bold">
-                  {activeWeek === 'previous' ? 'Previous Week' : 
-                   activeWeek === 'next' ? 'Next Week' : 'This Week'}
+                  {weekOffset === -1 ? 'Previous Week' : 
+                   weekOffset === 1 ? 'Next Week' : 'This Week'}
                 </h3>
                 <p className="text-muted-foreground">{weekDates.start} - {weekDates.end}</p>
               </div>
               <Button 
                 variant="ghost" 
                 size="sm"
-                onClick={() => setActiveWeek('next')}
+                onClick={() => setWeekOffset((prev) => Math.min(1, prev + 1))}
               >
                 Next Week
                 <ChevronRight className="h-4 w-4 ml-1" />
