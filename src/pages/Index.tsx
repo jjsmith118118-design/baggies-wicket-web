@@ -94,35 +94,37 @@ const Index = () => {
       {/* Hero Section 2 - Competitive Cricket */}
       <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              Competitive Cricket
-            </h1>
-            <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
-              Challenge Yourself
-            </p>
-            <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
-              Take part in regular league matches and tournaments. Test your skills against local teams in a competitive yet friendly environment.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-3" onClick={() => {
-              const element = document.getElementById('fixtures-results');
-              if (element) {
-                element.scrollIntoView({
-                  behavior: 'smooth'
-                });
-              }
-            }}>
-                View Fixtures
-              </Button>
-              <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                <Link to="/contact">Contact Us</Link>
-              </Button>
-            </div>
-
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="flex justify-center">
               <img src="/lovable-uploads/bcc03811-3886-486f-a255-186e51b81487.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
+            </div>
+
+            <div className="text-center lg:text-left">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                Competitive Cricket
+              </h1>
+              <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
+                Challenge Yourself
+              </p>
+              <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
+                Take part in regular league matches and tournaments. Test your skills against local teams in a competitive yet friendly environment.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button size="lg" variant="secondary" className="text-lg px-8 py-3" onClick={() => {
+                const element = document.getElementById('fixtures-results');
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: 'smooth'
+                  });
+                }
+              }}>
+                  View Fixtures
+                </Button>
+                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                  <Link to="/contact">Contact Us</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
