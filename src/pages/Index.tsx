@@ -54,7 +54,7 @@ const Index = () => {
                 <CardTitle>Community</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">A welcoming club that brings together cricket enthusiasts of all ages and abilities. We've add</p>
+                <p className="text-muted-foreground">A welcoming club that brings together cricket enthusiasts of all ages and abilities.</p>
               </CardContent>
             </Card>
 
