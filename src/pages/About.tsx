@@ -1,9 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Trophy, Calendar, MapPin } from 'lucide-react';
-
 const About = () => {
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -20,14 +18,8 @@ const About = () => {
           <div className="grid md:grid-cols-2 gap-12 mb-16">
             <div>
               <h2 className="text-3xl font-bold mb-6 text-foreground">Our Story</h2>
-              <p className="text-muted-foreground text-lg mb-4">
-                Kingston Bagpuize Cricket Club has been at the heart of our community for generations, 
-                bringing together players of all ages and abilities who share a love for cricket.
-              </p>
-              <p className="text-muted-foreground text-lg mb-4">
-                We pride ourselves on being an inclusive, welcoming club that values sportsmanship, 
-                friendship, and the development of cricket skills at every level.
-              </p>
+              <p className="text-muted-foreground text-lg mb-4">Kingston Bagpuize Cricket Club has been at the heart of our community since 1834 when we were founded. </p>
+              <p className="text-muted-foreground text-lg mb-4">We pride ourselves on being an inclusive, welcoming club that values community through both our competitive and social cricket offerings. </p>
               <p className="text-muted-foreground text-lg">
                 Whether you're a seasoned player or new to the game, Kingston Bagpuize CC offers 
                 a supportive environment where everyone can enjoy cricket.
@@ -72,7 +64,7 @@ const About = () => {
               <CardContent className="pt-6">
                 <Calendar className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">Year Round</h3>
-                <p className="text-muted-foreground">Season runs from April to September</p>
+                <p className="text-muted-foreground">KBCC's season starts indoors in January and runs through to mid September outdoors</p>
               </CardContent>
             </Card>
             
@@ -80,7 +72,7 @@ const About = () => {
               <CardContent className="pt-6">
                 <Users className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">All Ages</h3>
-                <p className="text-muted-foreground">Players from juniors to seniors</p>
+                <p className="text-muted-foreground">KBCC's junior cricket starts at U9s all to the way to some of our senior playing members in the 70+ category</p>
               </CardContent>
             </Card>
             
@@ -88,7 +80,7 @@ const About = () => {
               <CardContent className="pt-6">
                 <MapPin className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">Local Grounds</h3>
-                <p className="text-muted-foreground">Beautiful village cricket ground</p>
+                <p className="text-muted-foreground">KBCC is proud </p>
               </CardContent>
             </Card>
             
@@ -102,8 +94,6 @@ const About = () => {
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default About;
