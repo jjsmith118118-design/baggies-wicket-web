@@ -10,8 +10,8 @@ const Contact = () => {
       <section className="relative bg-primary text-primary-foreground py-16 overflow-hidden">
         <div className="absolute inset-0">
           <img 
-            src="/lovable-uploads/c866206e-7e68-4ea0-9b65-5ff4d80b0013.png" 
-            alt="Cricket match at Kingston Bagpuize Cricket Club" 
+            src="/lovable-uploads/e2b7468b-3d9c-4e7f-8225-685b2a2c5068.png" 
+            alt="Cricket batsman in action at Kingston Bagpuize Cricket Club" 
             className="w-full h-full object-cover opacity-30"
           />
           <div className="absolute inset-0 bg-primary/70"></div>
