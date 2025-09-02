@@ -122,7 +122,7 @@ const Index = () => {
             </div>
 
             <div className="flex justify-center">
-              <img src="/lovable-uploads/3c2fec56-c330-4e5e-b23d-cc04456fcedd.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
+              <img src="/lovable-uploads/bcc03811-3886-486f-a255-186e51b81487.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
         </div>
