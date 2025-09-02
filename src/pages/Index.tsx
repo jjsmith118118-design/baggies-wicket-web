@@ -116,7 +116,7 @@ const Index = () => {
             }}>
                 View Fixtures
               </Button>
-              <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
+              <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
                 <Link to="/contact">Contact Us</Link>
               </Button>
             </div>
