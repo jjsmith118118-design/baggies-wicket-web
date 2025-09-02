@@ -29,7 +29,7 @@ const About = () => {
               </p>
             </div>
             <div>
-              <img src="/lovable-uploads/6da2f99d-4df7-452b-8883-389ec2466c3d.png" alt="Cricket action shot with wicket keeper at Kingston Bagpuize Cricket Club" className="w-full h-auto rounded-lg shadow-lg object-cover" />
+              <img src="/lovable-uploads/19c875b6-6018-4895-b06a-e74bc37cf155.png" alt="Cricket players celebrating at Kingston Bagpuize Cricket Club" className="w-full h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
 
