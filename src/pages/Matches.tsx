@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { format, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
 
 interface Match {
   id: string;
@@ -115,6 +116,31 @@ const Matches = () => {
     }, {} as Record<string, Match[]>);
   };
 
+  const getCurrentWeekDates = () => {
+    const now = new Date();
+    let weekStart: Date;
+    
+    switch (activeWeek) {
+      case 'previous':
+        weekStart = startOfWeek(subWeeks(now, 1), { weekStartsOn: 1 });
+        break;
+      case 'next':
+        weekStart = startOfWeek(addWeeks(now, 1), { weekStartsOn: 1 });
+        break;
+      default:
+        weekStart = startOfWeek(now, { weekStartsOn: 1 });
+    }
+    
+    const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
+    
+    return {
+      start: format(weekStart, 'EEE d MMM'),
+      end: format(weekEnd, 'EEE d MMM')
+    };
+  };
+
+  const weekDates = getCurrentWeekDates();
+
   const groupedMatches = groupMatchesByDate(filteredMatches);
 
   return (
@@ -168,7 +194,7 @@ const Matches = () => {
                   {activeWeek === 'previous' ? 'Previous Week' : 
                    activeWeek === 'next' ? 'Next Week' : 'This Week'}
                 </h3>
-                <p className="text-muted-foreground">Mon 14 Jul - Sun 20 Jul</p>
+                <p className="text-muted-foreground">{weekDates.start} - {weekDates.end}</p>
               </div>
               <Button 
                 variant="ghost" 
