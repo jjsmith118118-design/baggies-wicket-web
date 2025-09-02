@@ -140,28 +140,26 @@ const Index = () => {
       {/* Hero Section 3 - Training & Development */}
       <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">
-                Training & Development
-              </h1>
-              <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
-                Improve Your Game
-              </p>
-              <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
-                Weekly training sessions with experienced coaches. Perfect for players of all skill levels looking to develop their cricket abilities.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                  <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">
-                    Start Training
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
-                  <Link to="/about">About Us</Link>
-                </Button>
-              </div>
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+              Training & Development
+            </h1>
+            <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
+              Improve Your Game
+            </p>
+            <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
+              Weekly training sessions with experienced coaches. Perfect for players of all skill levels looking to develop their cricket abilities.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+                <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">
+                  Start Training
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
+                <Link to="/about">About Us</Link>
+              </Button>
             </div>
 
             <div className="flex justify-center">
