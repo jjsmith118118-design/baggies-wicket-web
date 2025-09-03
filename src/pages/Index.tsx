@@ -92,10 +92,6 @@ const Index = () => {
       <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="flex justify-center">
-              <img src="/lovable-uploads/bcc03811-3886-486f-a255-186e51b81487.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
-            </div>
-
             <div className="text-center lg:text-left">
               <h1 className="text-4xl md:text-6xl font-bold mb-4">
                 Competitive Cricket
@@ -122,6 +118,10 @@ const Index = () => {
                   <Link to="/contact">Contact Us</Link>
                 </Button>
               </div>
+            </div>
+
+            <div className="flex justify-center">
+              <img src="/lovable-uploads/bcc03811-3886-486f-a255-186e51b81487.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
         </div>
