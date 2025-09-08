@@ -30,26 +30,84 @@ const FixturesResults = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'senior' | 'junior' | 'women'>('all');
   const { toast } = useToast();
 
+  useEffect(() => {
+    fetchMatchData();
+  }, []);
+
+  // Play Cricket API credentials
+  const SITE_ID = '3758';
+  const API_TOKEN = '33239cdb5dc60ba5c114a5dd885a8200';
+  const SEASON = '2025';
+
   // Function to fetch data from Play Cricket API
   const fetchMatchData = async () => {
     setLoading(true);
     try {
-      // This would be the actual API call to Play Cricket
-      // const response = await fetch(`https://play-cricket.com/api/v2/matches.json?site_id=YOUR_SITE_ID&season=2025&api_token=YOUR_API_TOKEN`);
-      // const data = await response.json();
+      const [fixturesResponse, resultsResponse] = await Promise.all([
+        fetch(`https://play-cricket.com/api/v2/matches.json?site_id=${SITE_ID}&season=${SEASON}&api_token=${API_TOKEN}`),
+        fetch(`https://play-cricket.com/api/v2/result_summary.json?site_id=${SITE_ID}&season=${SEASON}&api_token=${API_TOKEN}`)
+      ]);
       
-      // For now, we'll simulate the API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!fixturesResponse.ok || !resultsResponse.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const [fixturesData, resultsData] = await Promise.all([
+        fixturesResponse.json(),
+        resultsResponse.json()
+      ]);
+      
+      // Map fixtures
+      const mappedFixtures: Match[] = fixturesData.matches?.map((match: any) => {
+        const [day, month, year] = match.match_date?.split('/') || ['1', '1', '2025'];
+        const matchDate = new Date(`${year}-${month}-${day}`);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to compare only dates
+        
+        // Only include future matches or live matches from fixtures
+        if (matchDate >= today || match.status === 'L') {
+          return {
+            id: match.id?.toString() || Math.random().toString(),
+            date: match.match_date || new Date().toISOString().split('T')[0],
+            time: match.match_time || '14:30',
+            homeTeam: match.home_club_name || 'Home Team',
+            awayTeam: match.away_club_name || 'Away Team',
+            venue: match.ground_name || 'Ground',
+            competition: match.competition_name || 'League',
+            status: match.status === 'L' ? 'live' as const : 'scheduled' as const,
+            teamCategory: 'senior' as const,
+          };
+        }
+        return null;
+      }).filter(Boolean) || [];
+
+      // Map results
+      const mappedResults: Match[] = resultsData.result_summary?.map((result: any) => ({
+        id: result.id?.toString() || Math.random().toString(),
+        date: result.match_date || new Date().toISOString().split('T')[0],
+        time: result.match_time || '14:30',
+        homeTeam: result.home_club_name || 'Home Team',
+        awayTeam: result.away_club_name || 'Away Team',
+        venue: result.ground_name || 'Ground',
+        competition: result.competition_name || 'League',
+        status: 'completed' as const,
+        result: result.result_description || result.result || 'Result unavailable',
+        teamCategory: 'senior' as const,
+      })) || [];
+
+      const allMatches = [...mappedFixtures, ...mappedResults];
+      setMatches(allMatches);
       
       toast({
         title: "Data Updated",
-        description: "Fixtures and results refreshed from Play Cricket",
+        description: `Loaded ${allMatches.length} matches from Play Cricket`,
         duration: 3000,
       });
     } catch (error) {
+      console.error('Error fetching Play Cricket data:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch match data",
+        description: "Failed to fetch match data from Play Cricket API",
         variant: "destructive",
         duration: 3000,
       });
@@ -63,17 +121,11 @@ const FixturesResults = () => {
     return match.teamCategory === activeTab;
   });
 
-  const groupedMatches = filteredMatches.reduce((groups, match) => {
-    const date = match.date;
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(match);
-    return groups;
-  }, {} as Record<string, Match[]>);
 
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
+    // Convert DD/MM/YYYY to YYYY-MM-DD for proper parsing
+    const [day, month, year] = dateStr.split('/');
+    const date = new Date(`${year}-${month}-${day}`);
     return date.toLocaleDateString('en-GB', { 
       weekday: 'long', 
       day: 'numeric', 
@@ -100,13 +152,27 @@ const FixturesResults = () => {
   };
 
   // Separate fixtures and results
-  const upcomingMatches = filteredMatches.filter(match => 
-    match.status === 'scheduled' || match.status === 'live'
-  );
+  const upcomingMatches = filteredMatches
+    .filter(match => match.status === 'scheduled' || match.status === 'live')
+    .sort((a, b) => {
+      // Convert DD/MM/YYYY to YYYY-MM-DD for proper sorting
+      const [dayA, monthA, yearA] = a.date.split('/');
+      const [dayB, monthB, yearB] = b.date.split('/');
+      const dateA = new Date(`${yearA}-${monthA}-${dayA}`);
+      const dateB = new Date(`${yearB}-${monthB}-${dayB}`);
+      return dateA.getTime() - dateB.getTime();
+    });
   
-  const recentResults = filteredMatches.filter(match => 
-    match.status === 'completed'
-  );
+  const recentResults = filteredMatches
+    .filter(match => match.status === 'completed')
+    .sort((a, b) => {
+      // Convert DD/MM/YYYY to YYYY-MM-DD for proper sorting (most recent first)
+      const [dayA, monthA, yearA] = a.date.split('/');
+      const [dayB, monthB, yearB] = b.date.split('/');
+      const dateA = new Date(`${yearA}-${monthA}-${dayA}`);
+      const dateB = new Date(`${yearB}-${monthB}-${dayB}`);
+      return dateB.getTime() - dateA.getTime();
+    });
 
   return (
     <div className="space-y-6">

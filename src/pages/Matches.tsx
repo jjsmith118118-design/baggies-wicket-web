@@ -62,21 +62,40 @@ const Matches = () => {
       const data = await response.json();
       
       // Map Play Cricket API response to our Match interface
-      const mappedMatches: Match[] = data.matches?.map((match: any) => ({
-        id: match.id?.toString() || Math.random().toString(),
-        date: match.match_date || new Date().toISOString().split('T')[0],
-        time: match.match_time || '14:30',
-        homeTeam: match.home_club_name || 'Home Team',
-        awayTeam: match.away_club_name || 'Away Team',
-        venue: match.ground_name || 'Ground',
-        competition: match.competition_name || 'League',
-        status: match.status === 'L' ? 'live' : 
-                match.result ? 'completed' : 'scheduled',
-        result: match.result_description || match.result,
-        teamCategory: 'senior' as const, // Default to senior, could be enhanced based on match name
-        homeFormGuide: undefined,
-        awayFormGuide: undefined
-      })) || [];
+      const mappedMatches: Match[] = data.matches?.map((match: any) => {
+        const [day, month, year] = match.match_date?.split('/') || ['1', '1', '2025'];
+        const matchDate = new Date(`${year}-${month}-${day}`);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to compare only dates
+        
+        // Determine status based on result and date
+        let status: 'scheduled' | 'completed' | 'live' | 'cancelled' | 'postponed';
+        if (match.status === 'L') {
+          status = 'live';
+        } else if (match.result_description || match.result) {
+          status = 'completed';
+        } else if (matchDate < today) {
+          // Past matches without results - likely cancelled/postponed
+          status = 'cancelled';
+        } else {
+          status = 'scheduled';
+        }
+
+        return {
+          id: match.id?.toString() || Math.random().toString(),
+          date: match.match_date || new Date().toISOString().split('T')[0],
+          time: match.match_time || '14:30',
+          homeTeam: match.home_club_name || 'Home Team',
+          awayTeam: match.away_club_name || 'Away Team',
+          venue: match.ground_name || 'Ground',
+          competition: match.competition_name || 'League',
+          status,
+          result: match.result_description || match.result,
+          teamCategory: 'senior' as const, // Default to senior, could be enhanced based on match name
+          homeFormGuide: undefined,
+          awayFormGuide: undefined
+        };
+      }) || [];
 
       // Filter matches by the current week's date range
       const filteredMatches = filterMatchesByWeek(mappedMatches);
@@ -178,7 +197,9 @@ const Matches = () => {
   };
 
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
+    // Convert DD/MM/YYYY to YYYY-MM-DD for proper parsing
+    const [day, month, year] = dateStr.split('/');
+    const date = new Date(`${year}-${month}-${day}`);
     return date.toLocaleDateString('en-GB', { 
       weekday: 'long', 
       day: 'numeric', 
@@ -255,7 +276,9 @@ const Matches = () => {
     const { startDate, endDate } = weekDates;
     
     return matches.filter(match => {
-      const matchDate = new Date(match.date);
+      // Convert DD/MM/YYYY to YYYY-MM-DD for proper parsing
+      const [day, month, year] = match.date.split('/');
+      const matchDate = new Date(`${year}-${month}-${day}`);
       return matchDate >= startDate && matchDate <= endDate;
     });
   };
@@ -333,6 +356,18 @@ const Matches = () => {
               <div className="flex justify-center items-center py-8">
                 <RefreshCw className="h-8 w-8 animate-spin text-primary" />
               </div>
+            ) : Object.keys(groupedMatches).length === 0 ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No matches scheduled</h3>
+                  <p className="text-muted-foreground">
+                    There are no matches scheduled for{' '}
+                    {weekOffset === -1 ? 'the previous week' : 
+                     weekOffset === 1 ? 'next week' : 'this week'}.
+                  </p>
+                </CardContent>
+              </Card>
             ) : (
               Object.entries(groupedMatches).map(([date, dayMatches]) => (
                 <Card key={date}>
