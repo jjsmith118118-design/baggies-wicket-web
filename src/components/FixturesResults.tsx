@@ -223,7 +223,7 @@ const FixturesResults = () => {
                 <p className="text-muted-foreground text-center py-8">No upcoming fixtures</p>
               ) : (
                 upcomingMatches.slice(0, 3).map((match) => (
-                  <Card key={match.id} className="p-4 hover:bg-accent/50 transition-colors">
+                  <Card key={match.id} className="p-4 hover-scale hover:bg-accent/50">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground font-medium">{match.competition}</span>
@@ -274,7 +274,7 @@ const FixturesResults = () => {
                 <p className="text-muted-foreground text-center py-8">No recent results</p>
               ) : (
                 recentResults.slice(0, 3).map((match) => (
-                  <Card key={match.id} className="p-4 hover:bg-accent/50 transition-colors">
+                  <Card key={match.id} className="p-4 hover-scale hover:bg-accent/50">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground font-medium">{match.competition}</span>

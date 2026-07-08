@@ -24,9 +24,6 @@ const Index = () => {
                     Join the Club
                   </a>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 border-maroon-foreground text-maroon-foreground hover:bg-maroon-foreground hover:text-maroon">
-                  
-                </Button>
               </div>
             </div>
 
@@ -45,7 +42,7 @@ const Index = () => {
           </h2>
           
           <div className="grid md:grid-cols-4 gap-8">
-            <Card className="text-center">
+            <Card className="text-center hover-scale">
               <CardHeader>
                 <Users className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Community</CardTitle>
@@ -55,7 +52,7 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center hover-scale">
               <CardHeader>
                 <Trophy className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Competitive Cricket</CardTitle>
@@ -65,7 +62,7 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center hover-scale">
               <CardHeader>
                 <Calendar className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Regular Fixtures</CardTitle>
@@ -75,7 +72,7 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center hover-scale">
               <CardHeader>
                 <MapPin className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Facilities</CardTitle>
@@ -89,10 +86,10 @@ const Index = () => {
       </section>
 
       {/* Hero Section 2 - Competitive Cricket */}
-      <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
+      <section className="bg-gradient-to-br from-maroon via-maroon to-black/40 text-maroon-foreground py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-left lg:order-2">
               <h1 className="text-4xl md:text-6xl font-bold mb-4">
                 Competitive Cricket
               </h1>
@@ -120,7 +117,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center lg:order-1">
               <img src="/lovable-uploads/bcc03811-3886-486f-a255-186e51b81487.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
@@ -159,7 +156,7 @@ const Index = () => {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
-            <Card>
+            <Card className="hover-scale">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-primary" />
@@ -174,7 +171,7 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover-scale">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-primary" />
@@ -189,7 +186,7 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover-scale">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-primary" />
