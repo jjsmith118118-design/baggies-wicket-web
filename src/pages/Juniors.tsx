@@ -17,13 +17,13 @@ const JUNIORS = {
     'Junior cricket at KBCC is for boys and girls from U9 upwards, whether they have played before or not. ' +
     '[Sessions are run by qualified, DBS-checked coaches] and are all about learning, playing and enjoying the game.',
   training: [
-    { group: '[U9 and U11]', when: '[Day], [time]' },
-    { group: '[U13 to U18]', when: '[Day], [time]' },
+    { group: '[U9 and U11]', when: 'Friday, 6pm' },
+    { group: '[U13 to U18]', when: 'Friday, 6pm' },
   ],
-  season: 'Indoor sessions start in [January]; outdoor training and matches run from April to September.',
-  bring: 'Comfortable sports clothes, trainers, a water bottle and sun cream. [The club provides bats, balls and protective kit to borrow.]',
-  coaches: '[Head of juniors name]',
-  safeguarding: '[Welfare officer name]',
+  season: 'Indoor sessions start in January; outdoor training and matches run from April to September.',
+  bring: 'Comfortable sports clothes, trainers, a water bottle and sun cream (when needed). Please bring your own kit.',
+  coaches: 'Darryl Woods, Simon Launder',
+  safeguarding: 'Caroline Walton',
 };
 
 const Juniors = () => {
