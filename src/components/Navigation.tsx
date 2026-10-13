@@ -21,9 +21,11 @@ const Navigation = () => {
     { name: 'Matches', path: '/matches', external: false },
     { name: 'Club Store', path: 'https://www.serioussport.co.uk/teamstores/kingston-bagpuize', external: true },
     { name: 'Contact Us', path: '/contact', external: false },
+    { name: 'Members', path: '/members', external: false },
   ];
 
-  const isActive = (path: string, external: boolean) => !external && location.pathname === path;
+  const isActive = (path: string, external: boolean) =>
+    !external && (path === '/' ? location.pathname === '/' : location.pathname.startsWith(path));
 
   return (
     <nav className={`bg-background border-b border-border sticky top-0 z-50 transition-shadow duration-300 ${scrolled ? 'shadow-md' : ''}`}>
