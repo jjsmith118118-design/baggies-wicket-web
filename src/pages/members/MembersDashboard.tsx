@@ -14,7 +14,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { CURRENT_SEASON } from "@/config/club";
 import {
-  ageGroupFor, callApi, formatDate, formatPence, paidMembershipChildIds, type Child, type Order,
+  ageGroupFor, callApi, formatDate, formatPence, isJunior, paidMembershipChildIds, type Child, type Order,
 } from "@/lib/members";
 
 const statusStyles: Record<Order["status"], string> = {
@@ -34,6 +34,8 @@ const MembersDashboard = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
+  const [addKind, setAddKind] = useState<"adult" | "child">("child");
+  const openAdd = (kind: "adult" | "child") => { setAddKind(kind); setAddOpen(true); };
 
   const load = useCallback(async () => {
     if (!supabase || !session) return;
@@ -75,66 +77,62 @@ const MembersDashboard = () => {
   }
 
   const paidIds = paidMembershipChildIds(orders);
+  const adults = children.filter((c) => !isJunior(ageGroupFor(c.date_of_birth)));
+  const kids = children.filter((c) => isJunior(ageGroupFor(c.date_of_birth)));
+  const unpaidKids = kids.filter((c) => !paidIds.has(c.id));
   const visibleOrders = orders.filter((o) => o.status !== "pending" && o.status !== "cancelled");
 
   return (
     <div className="space-y-12">
       {!profile?.full_name && <DetailsPrompt onSaved={refreshProfile} />}
 
-      {/* Children & memberships */}
+      {/* Adults */}
       <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Your children</h2>
-          <Button variant="outline" onClick={() => setAddOpen(true)}>
-            <Plus /> Add a child
-          </Button>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h2 className="text-2xl font-bold">Adults</h2>
+          <Button variant="outline" onClick={() => openAdd("adult")}><Plus /> Add an adult</Button>
         </div>
+        {adults.length === 0 ? (
+          <p className="text-muted-foreground">Playing or joining as a social member? Add yourself here.</p>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {adults.map((p) => <PersonCard key={p.id} person={p} paid={paidIds.has(p.id)} onRemove={removeChild} />)}
+          </div>
+        )}
+      </section>
 
-        {children.length === 0 ? (
+      {/* Children */}
+      <section>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h2 className="text-2xl font-bold">Children</h2>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={() => openAdd("child")}><Plus /> Add a child</Button>
+            {unpaidKids.length > 1 && (
+              <Button asChild>
+                <Link to="/members/shop?all=1">Pay all children's subs ({unpaidKids.length})</Link>
+              </Button>
+            )}
+          </div>
+        </div>
+        {kids.length === 0 ? (
           <Card>
             <CardContent className="py-10 text-center">
-              <p className="text-muted-foreground mb-4">Add your children to pay their subs for the {CURRENT_SEASON} season.</p>
-              <Button onClick={() => setAddOpen(true)}><Plus /> Add a child</Button>
+              <p className="text-muted-foreground mb-4">Add your children to pay their {CURRENT_SEASON} subs.</p>
+              <Button onClick={() => openAdd("child")}><Plus /> Add a child</Button>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {children.map((child) => {
-              const paid = paidIds.has(child.id);
-              const group = ageGroupFor(child.date_of_birth);
-              return (
-                <Card key={child.id} className={paid ? "" : "border-amber-300"}>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <CardTitle className="text-lg">{child.first_name} {child.last_name}</CardTitle>
-                        <p className="text-sm text-muted-foreground">
-                          {group ? `${group} in ${CURRENT_SEASON}` : `Too old for juniors in ${CURRENT_SEASON}`}
-                        </p>
-                      </div>
-                      <Button variant="ghost" size="icon" aria-label={`Remove ${child.first_name}`} onClick={() => removeChild(child)}>
-                        <Trash2 className="text-muted-foreground" />
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    {paid ? (
-                      <p className="flex items-center gap-2 text-green-700 font-medium">
-                        <CheckCircle2 className="h-5 w-5" /> {CURRENT_SEASON} subs paid
-                      </p>
-                    ) : (
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-amber-700 font-medium">{CURRENT_SEASON} subs due</span>
-                        <Button asChild size="sm">
-                          <Link to={`/members/shop?child=${child.id}`}>Pay subs</Link>
-                        </Button>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+          <>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {kids.map((p) => <PersonCard key={p.id} person={p} paid={paidIds.has(p.id)} onRemove={removeChild} />)}
+            </div>
+            {unpaidKids.length > 0 && (
+              <p className="text-sm text-muted-foreground mt-3">
+                Pay for everyone at once or one at a time. Sibling and family discounts are applied either way,
+                based on memberships you've already paid this season.
+              </p>
+            )}
+          </>
         )}
       </section>
 
@@ -178,10 +176,46 @@ const MembersDashboard = () => {
         )}
       </section>
 
-      <AddChildDialog open={addOpen} onOpenChange={setAddOpen} onAdded={load} />
+      <AddPersonDialog kind={addKind} open={addOpen} onOpenChange={setAddOpen} onAdded={load} />
     </div>
   );
 };
+
+function PersonCard({ person, paid, onRemove }: { person: Child; paid: boolean; onRemove: (c: Child) => void }) {
+  const group = ageGroupFor(person.date_of_birth);
+  const junior = isJunior(group);
+  return (
+    <Card className={paid || !junior ? "" : "border-amber-300"}>
+      <CardHeader className="pb-2">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <CardTitle className="text-lg">{person.first_name} {person.last_name}</CardTitle>
+            <p className="text-sm text-muted-foreground">{junior ? `${group} in ${CURRENT_SEASON}` : "Adult"}</p>
+          </div>
+          <Button variant="ghost" size="icon" aria-label={`Remove ${person.first_name}`} onClick={() => onRemove(person)}>
+            <Trash2 className="text-muted-foreground" />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {paid ? (
+          <p className="flex items-center gap-2 text-green-700 font-medium">
+            <CheckCircle2 className="h-5 w-5" /> {CURRENT_SEASON} {junior ? "subs" : "membership"} paid
+          </p>
+        ) : (
+          <div className="flex items-center justify-between gap-2">
+            <span className={junior ? "text-amber-700 font-medium" : "text-muted-foreground"}>
+              {junior ? `${CURRENT_SEASON} subs due` : `No ${CURRENT_SEASON} membership`}
+            </span>
+            <Button asChild size="sm" variant={junior ? "default" : "outline"}>
+              <Link to={`/members/shop?child=${person.id}`}>{junior ? "Pay subs" : "Join"}</Link>
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 function DetailsPrompt({ onSaved }: { onSaved: () => Promise<void> }) {
   const { session } = useAuth();
@@ -224,7 +258,9 @@ function DetailsPrompt({ onSaved }: { onSaved: () => Promise<void> }) {
   );
 }
 
-function AddChildDialog({ open, onOpenChange, onAdded }: { open: boolean; onOpenChange: (o: boolean) => void; onAdded: () => void }) {
+function AddPersonDialog({ kind, open, onOpenChange, onAdded }: {
+  kind: "adult" | "child"; open: boolean; onOpenChange: (o: boolean) => void; onAdded: () => void;
+}) {
   const { session } = useAuth();
   const [form, setForm] = useState({ first_name: "", last_name: "", date_of_birth: "" });
   const [saving, setSaving] = useState(false);
@@ -252,8 +288,12 @@ function AddChildDialog({ open, onOpenChange, onAdded }: { open: boolean; onOpen
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add a child</DialogTitle>
-          <DialogDescription>We use their date of birth to work out their age group.</DialogDescription>
+          <DialogTitle>{kind === "adult" ? "Add an adult" : "Add a child"}</DialogTitle>
+          <DialogDescription>
+            {kind === "adult"
+              ? "Add yourself or your partner. Date of birth confirms adult membership."
+              : "We use their date of birth to work out their age group."}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={save} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -272,12 +312,14 @@ function AddChildDialog({ open, onOpenChange, onAdded }: { open: boolean; onOpen
                    onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })} />
             {form.date_of_birth && (
               <p className="text-sm text-muted-foreground">
-                {group ? `Plays ${group} in the ${CURRENT_SEASON} season.` : `Too old for junior cricket in ${CURRENT_SEASON}.`}
+                {group && isJunior(group)
+                  ? `Plays ${group} in the ${CURRENT_SEASON} season.${kind === "adult" ? " They'll appear under Children." : ""}`
+                  : `Adult member.${kind === "child" ? " They'll appear under Adults." : ""}`}
               </p>
             )}
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={saving}>{saving && <Loader2 className="animate-spin" />}Add child</Button>
+            <Button type="submit" disabled={saving}>{saving && <Loader2 className="animate-spin" />}{kind === "adult" ? "Add adult" : "Add child"}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
