@@ -12,3 +12,6 @@ export const CONTACT_EMAIL = "baggiescricket@gmail.com";
 
 export const GROUND_ADDRESS = ["The Sportsfield", "Abingdon Road (A415)", "Kingston Bagpuize, Abingdon", "OX13 5GD"];
 export const DIRECTIONS_URL = "https://www.google.com/maps/dir/?api=1&destination=Kingston+Bagpuize+Cricket+Club+OX13+5GD";
+
+// Junior coordinator – "Ask a question" emails go here, with CONTACT_EMAIL in CC.
+export const JUNIOR_EMAIL = "kbccjuniorcoordinator@gmail.com";

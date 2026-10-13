@@ -3,6 +3,7 @@
 // Set it up in Stripe → Developers → Webhooks (see MEMBERS_SETUP.md).
 import type Stripe from "stripe";
 import { getStripe, getSupabaseAdmin, json, markOrderPaidFromSession } from "./_lib/server.js";
+import { notifyDiscord } from "./_lib/discord.js";
 
 export async function POST(request: Request) {
   const stripe = getStripe();
@@ -39,8 +40,9 @@ export async function POST(request: Request) {
         const charge = event.data.object as Stripe.Charge;
         // Only mark fully refunded charges; partial refunds stay "paid".
         if (charge.refunded && typeof charge.payment_intent === "string") {
-          await supabase.from("orders").update({ status: "refunded" })
-            .eq("stripe_payment_intent", charge.payment_intent);
+          const { data: refunded } = await supabase.from("orders").update({ status: "refunded" })
+            .eq("stripe_payment_intent", charge.payment_intent).neq("status", "refunded").select("id");
+          for (const o of refunded ?? []) await notifyDiscord(supabase, o.id, "refunded");
         }
         break;
       }

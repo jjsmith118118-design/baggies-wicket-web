@@ -2,6 +2,7 @@
 // Files/folders starting with "_" inside /api are NOT exposed as endpoints.
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
+import { notifyDiscord } from "./discord.js";
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -63,7 +64,7 @@ export async function markOrderPaidFromSession(session: Stripe.Checkout.Session)
     }
   }
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("orders")
     .update({
       status: "paid",
@@ -73,8 +74,12 @@ export async function markOrderPaidFromSession(session: Stripe.Checkout.Session)
     })
     .eq("id", orderId)
     .eq("stripe_session_id", session.id)
-    .in("status", ["pending", "cancelled"]);
+    .in("status", ["pending", "cancelled"])
+    .select("id");
 
   if (error) throw error;
+  // Only the call that actually changed the order posts to Discord,
+  // so a payment confirmed twice (webhook + return page) posts once.
+  if (updated && updated.length > 0) await notifyDiscord(supabase, orderId, "paid");
   return true;
 }

@@ -68,7 +68,7 @@ const Footer = () => {
                 Juniors
               </Link>
               <Link to="/members" className="block text-sm opacity-90 hover:opacity-100 transition-opacity">
-                Join / Pay subs
+                Members
               </Link>
               <a 
                 href="/#fixtures-results"
