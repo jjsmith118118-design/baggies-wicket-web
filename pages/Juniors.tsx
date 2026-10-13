@@ -164,21 +164,20 @@ const Juniors = () => {
               {JUNIORS.kitToBorrow && ' We provide all the cricket equipment.'}
             </Faq>
             <Faq q="Do they need to buy cricket whites?">
-              Not to start with. Whites are only needed for matches, and the coaches will let you know when your child is ready to play in one.
+              Not to start with. Whites are only needed for matches, and the coaches will let you know when matches are happening.
             </Faq>
             <Faq q="What if we can't make every week?">
               That's absolutely fine. Come when you can. Children get the most out of it with regular sessions, but there's no pressure.
             </Faq>
             <Faq q="Who runs the sessions?">
-              Sessions are led by our head of juniors, {JUNIORS.headOfJuniors}, with a team of volunteer coaches. Our welfare officer is {JUNIORS.welfareOfficer}.
+              Sessions are led by our head coach, Darryl Woods, with a team of volunteer coaches. Our welfare officer is Caroline Walton.
             </Faq>
             <Faq q="How much does it cost?">
               {taster > 0 && `Your first ${taster === 1 ? 'session is' : `${taster} sessions are`} free. `}
               {juniorSub ? (
                 <>
                   After that, junior membership for {CURRENT_SEASON} is {formatPence(juniorSub.price_pence)} for the season
-                  {juniorSub.price_2nd_child_pence && `, with brothers and sisters at ${formatPence(juniorSub.price_2nd_child_pence)}`}
-                  {juniorSub.price_3rd_child_pence && ` (${formatPence(juniorSub.price_3rd_child_pence)} from the third child)`}.
+                  {juniorSub.price_2nd_child_pence && `, with brothers and sisters at ${formatPence(juniorSub.price_2nd_child_pence)}`}.
                   {familyRate && juniorSub.price_2nd_child_pence &&
                     ` If a parent has an ${familyRate.name.replace(/ \d{4}$/, '')}, the first child is ${formatPence(juniorSub.price_2nd_child_pence)} too.`}
                 </>
