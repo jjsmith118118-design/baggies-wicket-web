@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { CONTACT_EMAIL, DIRECTIONS_URL } from '@/config/club';
 import { MapPin, Phone, Mail, Calendar, Clock, Users, Trophy } from 'lucide-react';
 
 const Footer = () => {
@@ -36,15 +37,18 @@ const Footer = () => {
                   <p>Abingdon Road (A415)</p>
                   <p>Kingston Bagpuize, Abingdon</p>
                   <p>OX13 5GD</p>
+                  <a href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 opacity-90 hover:opacity-100">
+                    Get directions
+                  </a>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 opacity-80" />
                 <a 
-                  href="mailto:kbcc.secretary@gmail.com" 
+                  href={`mailto:${CONTACT_EMAIL}`} 
                   className="text-sm opacity-90 hover:opacity-100 transition-opacity"
                 >
-                  kbcc.secretary@gmail.com
+                  {CONTACT_EMAIL}
                 </a>
               </div>
             </div>
@@ -59,6 +63,12 @@ const Footer = () => {
                 className="block text-sm opacity-90 hover:opacity-100 transition-opacity"
               >
                 About Us
+              </Link>
+              <Link to="/juniors" className="block text-sm opacity-90 hover:opacity-100 transition-opacity">
+                Juniors
+              </Link>
+              <Link to="/members" className="block text-sm opacity-90 hover:opacity-100 transition-opacity">
+                Join / Pay subs
               </Link>
               <a 
                 href="/#fixtures-results"
@@ -117,7 +127,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="border-t border-primary-foreground/20 mt-12 pt-8 text-center">
           <p className="text-sm opacity-80">
-            © 2025 Kingston Bagpuize Cricket Club. All rights reserved. | Affiliated to Oxfordshire Cricket Board
+            © {new Date().getFullYear()} Kingston Bagpuize Cricket Club. All rights reserved. | Affiliated to Oxfordshire Cricket Board
           </p>
         </div>
       </div>

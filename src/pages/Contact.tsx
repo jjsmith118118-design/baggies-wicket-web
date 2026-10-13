@@ -3,7 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { MapPin, Phone, Mail, Clock, Instagram } from 'lucide-react';
+import { MapPin, Mail, Clock, Instagram } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { CONTACT_EMAIL, DIRECTIONS_URL } from '@/config/club';
 const Contact = () => {
   return <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -35,7 +37,7 @@ const Contact = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="hover-scale">
+            <Card>
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1" />
@@ -46,42 +48,22 @@ const Contact = () => {
                       Kingston Bagpuize, Oxfordshire<br />
                       OX13 5GD
                     </p>
+                    <a href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm mt-2 inline-block">
+                      Get directions
+                    </a>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="hover-scale">
+            <Card>
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
                   <Instagram className="h-6 w-6 text-primary mt-1" />
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">Instagram</h3>
                     <p className="text-muted-foreground">
-                      <a href="https://www.instagram.com/baggiescricket/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={e => {
-                      // Try to open in Instagram app first, fallback to web
-                      const appUrl = "instagram://user?username=baggiescricket";
-                      const webUrl = "https://www.instagram.com/baggiescricket/";
-
-                      // Create a hidden iframe to test if the app can be opened
-                      const iframe = document.createElement("iframe");
-                      iframe.style.display = "none";
-                      iframe.src = appUrl;
-                      document.body.appendChild(iframe);
-
-                      // If app doesn't open within 2 seconds, open web version
-                      setTimeout(() => {
-                        document.body.removeChild(iframe);
-                      }, 2000);
-
-                      // Also set the href to web URL as fallback
-                      setTimeout(() => {
-                        if (document.visibilityState === "visible") {
-                          window.open(webUrl, "_blank");
-                        }
-                      }, 500);
-                      e.preventDefault();
-                    }}>
+                      <a href="https://www.instagram.com/baggiescricket/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                         @baggiescricket
                       </a>
                     </p>
@@ -90,21 +72,21 @@ const Contact = () => {
               </CardContent>
             </Card>
 
-            <Card className="hover-scale">
+            <Card>
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
                   <Mail className="h-6 w-6 text-primary mt-1" />
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">Email</h3>
                     <p className="text-muted-foreground">
-                      kingstonbagpuizecc@gmail.com
+                      <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">{CONTACT_EMAIL}</a>
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="hover-scale">
+            <Card>
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
                   <Clock className="h-6 w-6 text-primary mt-1" />
@@ -114,9 +96,7 @@ const Contact = () => {
                       Tuesday evenings: 6:00 PM - 8:00 PM<br />
                       Sunday mornings: 10:00 AM - 12:00 PM<br />
                       Match days:{" "}
-                      <a href="https://www.kingstonbagpuizecc.co.uk/matches" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                        As scheduled - click here
-                      </a>
+                      <Link to="/matches" className="text-primary hover:underline">see fixtures</Link>
                     </p>
                   </div>
                 </div>
@@ -143,7 +123,7 @@ const Contact = () => {
                 Join our community and be part of something special.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <a href="mailto:kingstonbagpuizecc@gmail.com" className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold">
+                <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold">
                   Email Us Now
                 </a>
                 <a href="https://www.instagram.com/baggiescricket/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors font-semibold">Message on Instagram</a>

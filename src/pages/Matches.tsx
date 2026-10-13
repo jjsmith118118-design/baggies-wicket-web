@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { fetchPlayCricket } from '@/lib/playCricket';
 import { format, startOfWeek, endOfWeek, addWeeks } from 'date-fns';
 
 interface Match {
@@ -33,9 +34,6 @@ const Matches = () => {
   const [selectedTeamCategory, setSelectedTeamCategory] = useState<'all' | 'senior' | 'junior' | 'women'>('all');
   const { toast } = useToast();
 
-  // Play Cricket API credentials
-  const SITE_ID = '3758';
-  const API_TOKEN = '33239cdb5dc60ba5c114a5dd885a8200';
   const SEASON = new Date().getFullYear().toString();
 
   useEffect(() => {
@@ -51,15 +49,7 @@ const Matches = () => {
   const fetchWeekFixtures = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://play-cricket.com/api/v2/matches.json?site_id=${SITE_ID}&season=${SEASON}&api_token=${API_TOKEN}`
-      );
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch fixtures');
-      }
-
-      const data = await response.json();
+      const data = await fetchPlayCricket('matches', SEASON);
       
       // Map Play Cricket API response to our Match interface
       const mappedMatches: Match[] = data.matches?.map((match: any) => {
@@ -101,16 +91,11 @@ const Matches = () => {
       const filteredMatches = filterMatchesByWeek(mappedMatches);
       setMatches(filteredMatches);
       
-      toast({
-        title: "Fixtures Loaded",
-        description: `Loaded ${filteredMatches.length} fixtures for selected week from Play Cricket`,
-        duration: 3000,
-      });
     } catch (error) {
       console.error('Error fetching Play Cricket fixtures:', error);
       toast({
-        title: "Error",
-        description: "Failed to load fixtures from Play Cricket API",
+        title: "Couldn't load matches",
+        description: "Fixtures couldn't be loaded right now. Try again shortly.",
         variant: "destructive",
         duration: 3000,
       });
@@ -123,15 +108,7 @@ const Matches = () => {
   const fetchPreviousWeekResults = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://play-cricket.com/api/v2/result_summary.json?site_id=${SITE_ID}&season=${SEASON}&api_token=${API_TOKEN}`
-      );
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch results');
-      }
-
-      const data = await response.json();
+      const data = await fetchPlayCricket('results', SEASON);
       
       // Map Play Cricket API response to our Match interface
       const mappedMatches: Match[] = data.result_summary?.map((result: any) => ({
@@ -153,16 +130,11 @@ const Matches = () => {
       const filteredMatches = filterMatchesByWeek(mappedMatches);
       setMatches(filteredMatches);
       
-      toast({
-        title: "Results Loaded",
-        description: `Loaded ${filteredMatches.length} results for selected week from Play Cricket`,
-        duration: 3000,
-      });
     } catch (error) {
       console.error('Error fetching Play Cricket results:', error);
       toast({
-        title: "Error",
-        description: "Failed to load results from Play Cricket API",
+        title: "Couldn't load matches",
+        description: "Results couldn't be loaded right now. Try again shortly.",
         variant: "destructive",
         duration: 3000,
       });
@@ -173,27 +145,8 @@ const Matches = () => {
   };
 
   const fetchLiveData = async () => {
-    setLoading(true);
-    try {
-      // In a real implementation, this would fetch from Play Cricket API
-      // For now, we're using the extracted data from the website
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "Data Updated",
-        description: "Live match data refreshed from Play Cricket",
-        duration: 3000,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch live data",
-        variant: "destructive",
-        duration: 3000,
-      });
-    } finally {
-      setLoading(false);
-    }
+    if (weekOffset === -1) await fetchPreviousWeekResults();
+    else await fetchWeekFixtures();
   };
 
   const formatDate = (dateStr: string) => {

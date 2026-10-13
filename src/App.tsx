@@ -9,6 +9,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Matches from "./pages/Matches";
 import NotFound from "./pages/NotFound";
+import Juniors from "./pages/Juniors";
 import { AuthProvider } from "./hooks/useAuth";
 import MembersLayout from "./pages/members/MembersLayout";
 import MembersDashboard from "./pages/members/MembersDashboard";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/matches" element={<Matches />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/juniors" element={<Juniors />} />
           <Route path="/members" element={<MembersLayout />}>
             <Route index element={<MembersDashboard />} />
             <Route path="shop" element={<MembersShop />} />

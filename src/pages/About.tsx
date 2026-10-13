@@ -35,7 +35,7 @@ const About = () => {
 
           {/* Quick Facts */}
           <div className="grid md:grid-cols-4 gap-6">
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardContent className="pt-6">
                 <Calendar className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">Year Round</h3>
@@ -43,17 +43,17 @@ const About = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardContent className="pt-6">
                 <Users className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">All Ages</h3>
                 <p className="text-muted-foreground">
-                  Junior cricket begins at U9s! <Link to="/contact" className="text-primary hover:underline">Contact us</Link> to get started.
+                  Junior cricket begins at U9s! <Link to="/juniors" className="text-primary hover:underline">Find out about juniors</Link>.
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardContent className="pt-6">
                 <Users className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">Community Focus</h3>
@@ -64,7 +64,7 @@ const About = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardContent className="pt-6">
                 <Trophy className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">All Abilities Welcome</h3>
