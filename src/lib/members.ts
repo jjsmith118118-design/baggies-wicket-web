@@ -1,15 +1,18 @@
-import { AGE_GROUPS, CURRENT_SEASON } from "@/config/club";
+import { CURRENT_SEASON } from "@/config/club";
 import { supabase } from "@/lib/supabase";
 
 export type Profile = { id: string; email: string; full_name: string | null; phone: string | null; is_admin: boolean };
 export type Child = { id: string; parent_id: string; first_name: string; last_name: string; date_of_birth: string };
 export type Product = {
   id: string; name: string; description: string | null; category: "membership" | "kit";
-  price_pence: number; season: string | null; age_group: string | null; sizes: string[]; sort_order: number;
+  price_pence: number; price_2nd_child_pence: number | null; price_3rd_child_pence: number | null;
+  unlocks_family_rate?: boolean;
+  season: string | null; age_group: string | null; sizes: string[]; sort_order: number;
 };
 export type OrderItem = {
   id: string; order_id: string; child_id: string | null; description: string; category: string;
   season: string | null; size: string | null; quantity: number; unit_price_pence: number;
+  full_price_pence: number | null; sibling_position: number | null;
 };
 export type Order = {
   id: string; parent_id: string; status: "pending" | "paid" | "cancelled" | "refunded"; total_pence: number;
@@ -22,20 +25,7 @@ export const formatPence = (pence: number) =>
 export const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
-/**
- * ECB junior age groups are based on age at 31 August before the season.
- * e.g. for the 2027 season, a child who is 10 on 31 Aug 2026 plays U11.
- * Returns the smallest club age group they fit, or null if too old.
- */
-export function ageGroupFor(dateOfBirth: string, season = CURRENT_SEASON): string | null {
-  const cutoff = new Date(Number(season) - 1, 7, 31); // 31 August
-  const dob = new Date(dateOfBirth);
-  let age = cutoff.getFullYear() - dob.getFullYear();
-  const hadBirthday =
-    cutoff.getMonth() > dob.getMonth() || (cutoff.getMonth() === dob.getMonth() && cutoff.getDate() >= dob.getDate());
-  if (!hadBirthday) age -= 1;
-  return AGE_GROUPS.find((g) => age < Number(g.replace(/\D/g, ""))) ?? null;
-}
+export { ageGroupFor, isJunior, membershipFits } from "../../api/_lib/rules";
 
 /** Child ids with a PAID membership for the given season. */
 export function paidMembershipChildIds(orders: Order[], season = CURRENT_SEASON) {

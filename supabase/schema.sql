@@ -1,5 +1,6 @@
 -- =====================================================================
 -- Kingston Bagpuize CC – Members area database
+-- For a BRAND NEW project only (already set up? run the numbered update files instead).
 -- Run this ONCE in Supabase: Dashboard → SQL Editor → New query → paste → Run
 -- =====================================================================
 
@@ -32,8 +33,11 @@ create table public.products (
   description  text,
   category     text not null check (category in ('membership', 'kit')),
   price_pence  integer not null check (price_pence > 0),
+  price_2nd_child_pence integer check (price_2nd_child_pence > 0), -- sibling rate (2nd child)
+  price_3rd_child_pence integer check (price_3rd_child_pence > 0), -- sibling rate (3rd+ child)
   season       text,                       -- e.g. '2027' (memberships)
-  age_group    text,                       -- e.g. 'U11'; null = any age group
+  age_group    text,                       -- e.g. 'U11'; 'Adult'; null = any junior
+  unlocks_family_rate boolean not null default false, -- adult membership that gives juniors the 2nd-child rate
   sizes        text[] not null default '{}', -- e.g. {'YS','YM','YL','S','M'}; empty = no sizes
   active       boolean not null default true,
   sort_order   integer not null default 0,
@@ -65,7 +69,9 @@ create table public.order_items (
   season            text,
   size              text,
   quantity          integer not null default 1 check (quantity > 0),
-  unit_price_pence  integer not null
+  unit_price_pence  integer not null,      -- what was charged
+  full_price_pence  integer,               -- before sibling discount
+  sibling_position  integer                -- 1st, 2nd, 3rd... junior membership that season
 );
 
 create index on public.children (parent_id);

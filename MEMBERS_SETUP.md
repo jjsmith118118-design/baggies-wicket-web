@@ -107,9 +107,30 @@ Copy the **Signing secret** (`whsec_…`) into Vercel as `STRIPE_WEBHOOK_SECRET`
 
 ## Things you'll change each season
 
-- `src/config/club.ts`: `CURRENT_SEASON` and the age groups.
-- Supabase **products** table: add next season's memberships (e.g. "U11 Membership 2028",
+- `api/_lib/rules.ts`: `CURRENT_SEASON` and the junior age groups. This one file is used by both
+  the website and the payment server, so they always agree.
+- Supabase **products** table: add next season's memberships (e.g. "Junior Membership 2028",
   season `2028`) and untick `active` on the old ones.
+
+## Membership pricing rules
+
+- **Junior memberships:** set `age_group` to an age group (e.g. `U9`) for a specific price, or leave
+  it empty (null) to cover every junior who doesn't have a specific one.
+- **Adult memberships:** set `age_group` to exactly `Adult`. Adults choose between all active adult
+  memberships, such as playing or social.
+- **Sibling discounts:** on a junior membership, fill in `price_2nd_child_pence` and
+  `price_3rd_child_pence` (the 3rd rate applies to the 3rd child and every one after). Leave both
+  empty for no discount. The server counts the family's memberships already **paid** this season
+  plus what's in the basket. The most expensive membership is charged at full price, and the rest
+  get the sibling rates. This works even if children are paid for weeks apart, and nobody can get
+  the reduced rate without a full-price child on their account. Adults are never discounted and
+  don't count towards the sibling total.
+- **Family rate with an adult membership:** tick `unlocks_family_rate` on an adult membership
+  (by default only Adult Playing). If the family has that membership in their basket or already
+  paid this season, their 1st child is charged the 2nd-child rate. Other children keep their usual
+  sibling rates.
+- Each order records the full price and which child number it was, so you can see every discount
+  given in the committee view and in Supabase.
 
 ## Privacy
 
