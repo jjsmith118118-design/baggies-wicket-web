@@ -91,7 +91,7 @@ const Navigation = () => {
               ))}
             </div>
             <Button asChild size="sm" variant={membersActive ? 'secondary' : 'default'}>
-              <Link to="/members">Join / Pay subs</Link>
+              <Link to="/members">Members</Link>
             </Button>
           </div>
 
@@ -165,7 +165,7 @@ const Navigation = () => {
               ))}
               <div className="px-3 pt-2">
                 <Button asChild className="w-full">
-                  <Link to="/members" onClick={() => setIsOpen(false)}>Join / Pay subs</Link>
+                  <Link to="/members" onClick={() => setIsOpen(false)}>Members</Link>
                 </Button>
               </div>
             </div>
