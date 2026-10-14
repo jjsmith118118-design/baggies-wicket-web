@@ -27,5 +27,5 @@ where name = 'Junior Membership 2027';
 -- Adult memberships. Adults choose which one they want.
 -- age_group must be exactly 'Adult'. Add, rename or remove rows as you like.
 insert into public.products (name, description, category, price_pence, season, age_group, sort_order) values
-  ('Adult Playing Membership 2027', 'For adults playing league or friendly cricket', 'membership', 15000, '2027', 'Adult', 30),
+  ('Adult Playing Membership 2027', 'For adults playing Saturday league or T20 cricket', 'membership', 15000, '2027', 'Adult', 30),
   ('Adult Social Membership 2027',  'Non-playing members and supporters',           'membership',  3000, '2027', 'Adult', 31);

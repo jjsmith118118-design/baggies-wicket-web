@@ -19,10 +19,12 @@ export type OrderItem = {
   id: string; order_id: string; child_id: string | null; description: string; category: string;
   season: string | null; size: string | null; quantity: number; unit_price_pence: number;
   full_price_pence: number | null; sibling_position: number | null;
+  products?: { name: string; age_group: string | null; category: string; xero_account_code?: string | null } | null;
 };
 export type Order = {
   id: string; parent_id: string; status: "pending" | "paid" | "cancelled" | "refunded"; total_pence: number;
   receipt_url: string | null; created_at: string; paid_at: string | null; order_items: OrderItem[];
+  stripe_payment_intent?: string | null;
 };
 
 export const formatPence = (pence: number) =>
@@ -31,7 +33,7 @@ export const formatPence = (pence: number) =>
 export const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
-export { ageGroupFor, bookingElsewhere, canPlayUp, externalBookingFor, isJunior, membershipFits } from "../../api/_lib/rules";
+export { ageGroupFor, bookingElsewhere, canPlayUp, externalBookingFor, isJunior, membershipFits, xeroAccountFor, XERO_ACCOUNTS, XERO_TAX_TYPE } from "../../api/_lib/rules";
 
 /** Child ids with a PAID membership for the given season. */
 export function paidMembershipChildIds(orders: Order[], season = CURRENT_SEASON) {

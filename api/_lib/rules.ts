@@ -80,3 +80,28 @@ export function siblingPrice(p: DiscountableProduct, position: number) {
 }
 
 export const ordinal = (n: number) => (n === 2 ? "2nd" : n === 3 ? "3rd" : `${n}th`);
+
+// ============================================================
+// FINANCE – which Xero account each sale is coded to.
+// Codes match the club's Xero chart of accounts. A product can
+// override this with its own xero_account_code in Supabase.
+// ============================================================
+export const XERO_ACCOUNTS = {
+  juniorSubs: { code: "0005", name: "Junior subs" },
+  adultSubs: { code: "0002", name: "Subs" },
+  socialSubs: { code: "0025", name: "Social subs" },
+  clubItems: { code: "0013", name: "Clothing Sales" },
+  stripeFees: { code: "1013", name: "Stripe Fees" },
+} as const;
+
+export const XERO_TAX_TYPE = "No VAT";
+
+type FinanceProduct = { category: string; age_group: string | null; name: string; xero_account_code?: string | null };
+
+/** The Xero account (code + label) a product's sales belong to. */
+export function xeroAccountFor(p: FinanceProduct): { code: string; name: string } {
+  if (p.xero_account_code) return { code: p.xero_account_code, name: `Account ${p.xero_account_code}` };
+  if (p.category === "kit") return XERO_ACCOUNTS.clubItems;
+  if (p.age_group === ADULT) return /social/i.test(p.name) ? XERO_ACCOUNTS.socialSubs : XERO_ACCOUNTS.adultSubs;
+  return XERO_ACCOUNTS.juniorSubs;
+}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FinanceExport } from "./FinanceExport";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -29,7 +30,7 @@ const MembersAdmin = () => {
     Promise.all([
       supabase.from("children").select("*").order("last_name"),
       supabase.from("profiles").select("*"),
-      supabase.from("orders").select("*, order_items(*)").eq("status", "paid").order("paid_at", { ascending: false }),
+      supabase.from("orders").select("*, order_items(*, products(name, age_group, category, xero_account_code))").eq("status", "paid").order("paid_at", { ascending: false }),
     ]).then(([c, p, o]) => {
       setChildren((c.data as Child[]) ?? []);
       setParents((p.data as Profile[]) ?? []);
@@ -248,6 +249,8 @@ const MembersAdmin = () => {
           </Card>
         )}
       </section>
+
+      <FinanceExport orders={orders} parents={parents} />
     </div>
   );
 };

@@ -38,7 +38,7 @@ const MembersLogin = () => {
         />
         <h1 className="text-3xl font-bold text-center mb-2">Members area</h1>
         <p className="text-center text-muted-foreground mb-8">
-          Pay your children's subs, buy club kit and see everything you've paid for.
+          Pay subs, buy club kit and see everything you've paid for.
         </p>
 
         <Card>

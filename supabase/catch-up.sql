@@ -9,7 +9,8 @@
 alter table public.products
   add column if not exists price_2nd_child_pence integer check (price_2nd_child_pence > 0),
   add column if not exists price_3rd_child_pence integer check (price_3rd_child_pence > 0),
-  add column if not exists unlocks_family_rate boolean not null default false;
+  add column if not exists unlocks_family_rate boolean not null default false,
+  add column if not exists xero_account_code text;
 
 alter table public.order_items
   add column if not exists full_price_pence integer,
@@ -38,7 +39,7 @@ where name = 'Junior Membership 2027';
 
 -- Adult memberships
 insert into public.products (name, description, category, price_pence, season, age_group, sort_order)
-select 'Adult Playing Membership 2027', 'For adults playing league or friendly cricket', 'membership', 15000, '2027', 'Adult', 30
+select 'Adult Playing Membership 2027', 'For adults playing Saturday league or T20 cricket', 'membership', 15000, '2027', 'Adult', 30
 where not exists (select 1 from public.products where name = 'Adult Playing Membership 2027');
 
 insert into public.products (name, description, category, price_pence, season, age_group, sort_order)
@@ -46,7 +47,9 @@ select 'Adult Social Membership 2027', 'Non-playing members and supporters', 'me
 where not exists (select 1 from public.products where name = 'Adult Social Membership 2027');
 
 -- Adult Playing gives the family's 1st child the 2nd-child rate
-update public.products set unlocks_family_rate = true
+update public.products
+set unlocks_family_rate = true,
+    description = 'For adults playing Saturday league or T20 cricket'
 where name = 'Adult Playing Membership 2027';
 
 -- Show what's on sale now

@@ -22,9 +22,14 @@ export async function POST(request: Request) {
     if (orderError) throw orderError;
 
     const { error: itemsError } = await supabase.from("order_items").insert(
-      lines.map(({ note: _note, ...l }) => ({ ...l, order_id: order.id })),
+      lines.map(({ note: _note, finance_label: _f, ...l }) => ({ ...l, order_id: order.id })),
     );
     if (itemsError) throw itemsError;
+
+    // e.g. "KBCC members area: Junior subs £150.00 | Subs £150.00" – shows in Stripe and the Xero feed.
+    const totals = new Map<string, number>();
+    for (const l of lines) totals.set(l.finance_label, (totals.get(l.finance_label) ?? 0) + l.unit_price_pence * l.quantity);
+    const breakdown = "KBCC members area: " + [...totals].map(([k, v]) => `${k} £${(v / 100).toFixed(2)}`).join(" | ");
 
     // Send people back to whichever site they came from (works on preview links too).
     const origin = request.headers.get("origin") ?? process.env.SITE_URL ?? new URL(request.url).origin;
@@ -34,7 +39,7 @@ export async function POST(request: Request) {
       customer_email: user.email ?? undefined,
       client_reference_id: order.id,
       metadata: { order_id: order.id },
-      payment_intent_data: { metadata: { order_id: order.id } },
+      payment_intent_data: { metadata: { order_id: order.id }, description: breakdown },
       line_items: lines.map((l) => ({
         quantity: l.quantity,
         price_data: { currency: "gbp", unit_amount: l.unit_price_pence, product_data: { name: l.description } },

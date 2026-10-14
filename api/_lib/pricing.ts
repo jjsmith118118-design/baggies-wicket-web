@@ -1,7 +1,7 @@
 // Works out the price of a basket ON THE SERVER, including sibling
 // discounts. The browser only ever sends product ids; it never decides prices.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { ADULT, ageGroupFor, bookingElsewhere, hasSiblingRates, membershipFits, ordinal, siblingPrice } from "./rules.js";
+import { ADULT, ageGroupFor, bookingElsewhere, hasSiblingRates, membershipFits, ordinal, siblingPrice, xeroAccountFor } from "./rules.js";
 
 export type BasketItem = { productId: string; childId?: string | null; size?: string | null; quantity?: number };
 
@@ -17,6 +17,7 @@ export type PricedLine = {
   full_price_pence: number; // before any sibling discount
   sibling_position: number | null; // 1 = first child, 2 = second... (junior memberships only)
   note: string | null; // e.g. "2nd child rate"
+  finance_label: string; // Xero account name, e.g. "Junior subs"
 };
 
 export class PricingError extends Error {}
@@ -100,6 +101,7 @@ export async function priceBasket(supabase: SupabaseClient, userId: string, item
       full_price_pence: product.price_pence,
       sibling_position: null,
       note: null,
+      finance_label: xeroAccountFor(product).name,
     });
   }
 

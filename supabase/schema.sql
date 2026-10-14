@@ -40,6 +40,7 @@ create table public.products (
   season       text,                       -- e.g. '2027' (memberships)
   age_group    text,                       -- e.g. 'U11'; 'Adult'; null = any junior
   unlocks_family_rate boolean not null default false, -- adult membership that gives juniors the 2nd-child rate
+  xero_account_code text,                  -- optional override; otherwise mapped automatically
   sizes        text[] not null default '{}', -- e.g. {'YS','YM','YL','S','M'}; empty = no sizes
   active       boolean not null default true,
   sort_order   integer not null default 0,
