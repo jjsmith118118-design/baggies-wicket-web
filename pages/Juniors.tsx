@@ -178,7 +178,6 @@ const Juniors = () => {
                 <>
                   After that, junior membership for {CURRENT_SEASON} is {formatPence(juniorSub.price_pence)} for the season
                   {juniorSub.price_2nd_child_pence && `, with brothers and sisters at ${formatPence(juniorSub.price_2nd_child_pence)}`}.
-                  {familyRate && juniorSub.price_2nd_child_pence &&
                     ` If a parent has an ${familyRate.name.replace(/ \d{4}$/, '')}, the first child is ${formatPence(juniorSub.price_2nd_child_pence)} too.`}
                 </>
               ) : (
