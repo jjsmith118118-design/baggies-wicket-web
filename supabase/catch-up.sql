@@ -16,7 +16,8 @@ alter table public.order_items
   add column if not exists sibling_position integer;
 
 alter table public.children
-  add column if not exists plays_up boolean not null default false;
+  add column if not exists plays_up boolean not null default false,
+  add column if not exists ecb_booked_season text;
 
 -- Switch off the separate U11–U20 memberships (keeps U9 and Adult)
 update public.products set active = false

@@ -12,10 +12,11 @@ import { CheckCircle2, ExternalLink, Loader2, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { PlayUpLink, StopPlayingUpLink } from "./PlayUpDialog";
+import { EcbBookedNote, MarkEcbBooked } from "./EcbBooking";
 import { useAuth } from "@/hooks/useAuth";
 import { CURRENT_SEASON } from "@/config/club";
 import {
-  ageGroupFor, bookingElsewhere, callApi, canPlayUp, externalBookingFor, formatDate, formatPence, isJunior, paidMembershipChildIds, type Child, type Order,
+  ageGroupFor, bookingElsewhere, callApi, isEcbBooked, canPlayUp, externalBookingFor, formatDate, formatPence, isJunior, paidMembershipChildIds, type Child, type Order,
 } from "@/lib/members";
 
 const statusStyles: Record<Order["status"], string> = {
@@ -206,15 +207,22 @@ function PersonCard({ person, paid, onRemove, onChanged }: {
       </CardHeader>
       <CardContent>
         {external ? (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-muted-foreground text-sm">Booked through {external.name}</span>
-              <Button asChild size="sm" variant="outline">
-                <a href={external.url} target="_blank" rel="noopener noreferrer">Book <ExternalLink /></a>
-              </Button>
+          isEcbBooked(person) ? (
+            <EcbBookedNote child={person} onChanged={onChanged} />
+          ) : (
+            <div className="space-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-muted-foreground text-sm">{group} is booked through {external.name}</span>
+                <Button asChild size="sm" variant="outline">
+                  <a href={external.url} target="_blank" rel="noopener noreferrer">Book <ExternalLink /></a>
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-x-4">
+                <MarkEcbBooked child={person} group={group} onChanged={onChanged} />
+                {canPlayUp(group) && <PlayUpLink child={person} group={group} onChanged={onChanged} />}
+              </div>
             </div>
-            {canPlayUp(group) && <PlayUpLink child={person} group={group} onChanged={onChanged} />}
-          </div>
+          )
         ) : paid ? (
           <p className="flex items-center gap-2 text-green-700 font-medium">
             <CheckCircle2 className="h-5 w-5" /> {CURRENT_SEASON} {junior ? "subs" : "membership"} paid

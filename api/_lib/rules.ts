@@ -14,7 +14,7 @@ export const CURRENT_SEASON = "2027";
 // "canPlayUp": a parent can confirm (with a coach's agreement) that their
 // child plays in an older age group, and then pay club membership instead.
 export const AGE_GROUPS: { name: string; maxAge: number; bookVia?: { name: string; url: string }; canPlayUp?: boolean }[] = [
-  { name: "All Stars", maxAge: 8, canPlayUp: true, bookVia: { name: "the ECB", url: "https://www.ecb.co.uk/play/all-stars" } }, // ages 5–8
+  { name: "All Stars", maxAge: 8, canPlayUp: true, bookVia: { name: "the ECB", url: "https://ecb.clubspark.uk/AllStars/kingstonbagpuize/Course/02a1eadf-1814-4f03-9f3e-b8d44174d066" } }, // ages 5–8
   { name: "Dynamos", maxAge: 11, canPlayUp: true, bookVia: { name: "the ECB", url: "https://www.ecb.co.uk/play/dynamoscricket" } }, // ages 9–11
   { name: "U13", maxAge: 12 },
   { name: "U15", maxAge: 14 },

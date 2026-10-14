@@ -38,7 +38,7 @@ const ADULTS = {
     { label: "Tuesday evenings (men's and women's)", when: 'From 6pm' },
   ],
   kitToBorrow: true, // set to false if players need their own bat, pads etc.
-  availability: '[Our captains collect availability each week through the club on Spond.]',
+  availability: '[Our captains collect availability each week through the club app.]',
 };
 
 const enquiry = (subject: string, body: string) =>

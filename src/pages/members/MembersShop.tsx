@@ -8,10 +8,11 @@ import { CheckCircle2, ExternalLink, Loader2, ShoppingBasket, X } from "lucide-r
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { PlayUpLink } from "./PlayUpDialog";
+import { EcbBookedNote, MarkEcbBooked } from "./EcbBooking";
 import { useAuth } from "@/hooks/useAuth";
 import { ADULT, CURRENT_SEASON, KIT_STORE_URL } from "@/config/club";
 import {
-  ageGroupFor, bookingElsewhere, callApi, canPlayUp, externalBookingFor, formatPence, isJunior, paidMembershipChildIds, type Child, type Order, type Product,
+  ageGroupFor, bookingElsewhere, callApi, isEcbBooked, canPlayUp, externalBookingFor, formatPence, isJunior, paidMembershipChildIds, type Child, type Order, type Product,
 } from "@/lib/members";
 
 type BasketLine = { key: string; product: Product; child: Child | null; size: string | null; quantity: number };
@@ -375,12 +376,23 @@ function ExternalRow({ child, group, booking, onChanged }: {
     <>
       <div>
         <p className="font-semibold">{child.first_name} {child.last_name} <span className="font-normal text-muted-foreground">· {group}</span></p>
-        <p className="text-sm text-muted-foreground">{group} is booked and paid through {booking.name}, so there's nothing to pay here.</p>
-        {canPlayUp(group) && <div className="mt-1"><PlayUpLink child={child} group={group} onChanged={onChanged} /></div>}
+        {isEcbBooked(child) ? (
+          <div className="mt-1"><EcbBookedNote child={child} onChanged={onChanged} /></div>
+        ) : (
+          <>
+            <p className="text-sm text-muted-foreground">{group} is booked and paid through {booking.name}, so there's nothing to pay here.</p>
+            <div className="mt-1 flex flex-wrap gap-x-4">
+              <MarkEcbBooked child={child} group={group} onChanged={onChanged} />
+              {canPlayUp(group) && <PlayUpLink child={child} group={group} onChanged={onChanged} />}
+            </div>
+          </>
+        )}
       </div>
-      <Button asChild variant="outline">
-        <a href={booking.url} target="_blank" rel="noopener noreferrer">Book {group} <ExternalLink /></a>
-      </Button>
+      {!isEcbBooked(child) && (
+        <Button asChild variant="outline">
+          <a href={booking.url} target="_blank" rel="noopener noreferrer">Book {group} <ExternalLink /></a>
+        </Button>
+      )}
     </>
   );
 }

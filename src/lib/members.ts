@@ -2,7 +2,13 @@ import { CURRENT_SEASON } from "@/config/club";
 import { supabase } from "@/lib/supabase";
 
 export type Profile = { id: string; email: string; full_name: string | null; phone: string | null; is_admin: boolean };
-export type Child = { id: string; parent_id: string; first_name: string; last_name: string; date_of_birth: string; plays_up?: boolean };
+export type Child = {
+  id: string; parent_id: string; first_name: string; last_name: string; date_of_birth: string;
+  plays_up?: boolean; ecb_booked_season?: string | null;
+};
+
+/** Has the parent said this child is booked with the ECB for the current season? */
+export const isEcbBooked = (c: Child, season = CURRENT_SEASON) => c.ecb_booked_season === season;
 export type Product = {
   id: string; name: string; description: string | null; category: "membership" | "kit";
   price_pence: number; price_2nd_child_pence: number | null; price_3rd_child_pence: number | null;

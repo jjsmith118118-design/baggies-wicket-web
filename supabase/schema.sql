@@ -24,6 +24,7 @@ create table public.children (
   last_name      text not null,
   date_of_birth  date not null,
   plays_up       boolean not null default false, -- playing in an older age group (coach agreed)
+  ecb_booked_season text,                         -- season the parent says they booked All Stars/Dynamos with the ECB
   created_at     timestamptz not null default now()
 );
 

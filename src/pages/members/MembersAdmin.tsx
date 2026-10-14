@@ -9,10 +9,10 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { CLUB_EMAIL, CURRENT_SEASON } from "@/config/club";
 import {
-  ageGroupFor, bookingElsewhere, externalBookingFor, formatDate, formatPence, isJunior, paidMembershipChildIds, type Child, type Order, type Profile,
+  ageGroupFor, bookingElsewhere, externalBookingFor, isEcbBooked, formatDate, formatPence, isJunior, paidMembershipChildIds, type Child, type Order, type Profile,
 } from "@/lib/members";
 
-type Row = { child: Child; group: string; parent: Profile | undefined; paid: boolean; external: boolean; playingUp: boolean };
+type Row = { child: Child; group: string; parent: Profile | undefined; paid: boolean; external: boolean; playingUp: boolean; ecbBooked: boolean };
 
 const MembersAdmin = () => {
   const { profile } = useAuth();
@@ -46,7 +46,7 @@ const MembersAdmin = () => {
         const group = ageGroupFor(child.date_of_birth);
         const external = !!bookingElsewhere(group, child.plays_up);
         const playingUp = !!externalBookingFor(group) && !external;
-        return { child, group, parent: parentMap.get(child.parent_id), paid: paidIds.has(child.id), external, playingUp };
+        return { child, group, parent: parentMap.get(child.parent_id), paid: paidIds.has(child.id), external, playingUp, ecbBooked: external && isEcbBooked(child) };
       })
       .filter((r) => (segment === "juniors" ? isJunior(r.group) : !isJunior(r.group)));
   }, [children, parents, orders, segment]);
@@ -60,8 +60,9 @@ const MembersAdmin = () => {
 
   const q = search.trim().toLowerCase();
   const visible = rows.filter((r) => {
-    if (filter === "paid" && !r.paid) return false;
-    if (filter === "unpaid" && (r.paid || r.external)) return false;
+    const settled = r.external ? r.ecbBooked : r.paid;
+    if (filter === "paid" && !settled) return false;
+    if (filter === "unpaid" && settled) return false;
     if (!q) return true;
     return [r.child.first_name, r.child.last_name, r.parent?.full_name, r.parent?.email, r.group]
       .some((v) => v?.toLowerCase().includes(q));
@@ -70,6 +71,20 @@ const MembersAdmin = () => {
   const payRows = rows.filter((r) => !r.external); // ECB groups don't pay here
   const unpaidRows = payRows.filter((r) => !r.paid);
   const unpaidEmails = [...new Set(unpaidRows.map((r) => r.parent?.email).filter(Boolean))] as string[];
+  const ecbRows = rows.filter((r) => r.external);
+  const ecbNotBooked = ecbRows.filter((r) => !r.ecbBooked);
+  const ecbEmails = [...new Set(ecbNotBooked.map((r) => r.parent?.email).filter(Boolean))] as string[];
+
+  const emailEcbReminder = () => {
+    const groups = [...new Set(ecbNotBooked.map((r) => r.group))];
+    const links = groups.map((g) => `${g}: ${externalBookingFor(g)?.url}`).join("\n");
+    const subject = encodeURIComponent(`Kingston Bagpuize CC – booking ${groups.join(" / ")} for ${CURRENT_SEASON}`);
+    const body = encodeURIComponent(
+      `Hi,\n\nA reminder that ${groups.join(" and ")} for ${CURRENT_SEASON} is booked through the ECB. You can book here:\n\n${links}\n\n` +
+      `Once you've booked, please tap "I've already booked" on your child in the members area: ${window.location.origin}/members\n\nThank you!\nKingston Bagpuize CC`,
+    );
+    window.location.href = `mailto:${CLUB_EMAIL}?bcc=${ecbEmails.join(",")}&subject=${subject}&body=${body}`;
+  };
 
   const seasonItems = orders.flatMap((o) => o.order_items);
   const rowIds = new Set(rows.map((r) => r.child.id));
@@ -102,7 +117,7 @@ const MembersAdmin = () => {
     const header = ["Name", "Age group", "Date of birth", "Account holder", "Email", "Phone", `${CURRENT_SEASON} membership`];
     const lines = rows.map((r) => [
       `${r.child.first_name} ${r.child.last_name}`, r.playingUp ? `${r.group} (playing up)` : r.group, r.child.date_of_birth,
-      r.parent?.full_name ?? "", r.parent?.email ?? "", r.parent?.phone ?? "", r.external ? "Via ECB" : r.paid ? "Paid" : "Unpaid",
+      r.parent?.full_name ?? "", r.parent?.email ?? "", r.parent?.phone ?? "", r.external ? (r.ecbBooked ? "Booked via ECB" : "Not booked (ECB)") : r.paid ? "Paid" : "Unpaid",
     ]);
     const csv = [header, ...lines].map((cols) => cols.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
@@ -124,7 +139,7 @@ const MembersAdmin = () => {
 
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Stat label={`${CURRENT_SEASON} memberships paid`} value={`${payRows.length - unpaidRows.length} of ${payRows.length}`}
-              sub={rows.length > payRows.length ? `plus ${rows.length - payRows.length} booked via the ECB` : undefined} />
+              sub={ecbRows.length ? `plus ${ecbRows.length - ecbNotBooked.length} of ${ecbRows.length} All Stars / Dynamos booked with the ECB` : undefined} />
         <Stat label={segment === "juniors" ? "Still to pay" : "Not yet joined"} value={String(unpaidRows.length)}
               tone={unpaidRows.length && segment === "juniors" ? "warn" : undefined} />
         <Stat label={`${label} memberships collected`} value={formatPence(subsCollected)}
@@ -137,6 +152,11 @@ const MembersAdmin = () => {
           <h2 className="text-2xl font-bold">{label}</h2>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={downloadCsv}><Download /> Download CSV</Button>
+            {segment === "juniors" && ecbRows.length > 0 && (
+              <Button variant="outline" onClick={emailEcbReminder} disabled={ecbEmails.length === 0}>
+                <Mail /> ECB booking reminder ({ecbEmails.length})
+              </Button>
+            )}
             <Button onClick={emailUnpaid} disabled={unpaidEmails.length === 0}>
               <Mail /> {segment === "juniors" ? "Email unpaid parents" : "Email adults not yet joined"} ({unpaidEmails.length})
             </Button>
@@ -187,7 +207,9 @@ const MembersAdmin = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       {r.external
-                        ? <Badge variant="outline">Via ECB</Badge>
+                        ? r.ecbBooked
+                          ? <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Booked via ECB</Badge>
+                          : <Badge variant="outline" className="border-amber-300 text-amber-800">Not booked (ECB)</Badge>
                         : r.paid
                         ? <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Paid</Badge>
                         : <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">Unpaid</Badge>}
