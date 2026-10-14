@@ -19,8 +19,8 @@ const JUNIORS = {
   tasterSessions: 2, // free sessions before joining; set to 0 if you don't offer any
   kitToBorrow: true, // set to false if children need their own bat, pads etc.
   training: [
-    { groups: ['U9', 'U11'], label: 'U9 and U11', when: '[Friday], [6pm to 7pm]' },
-    { groups: ['U13', 'U15', 'U18', 'U20'], label: 'U13 and older', when: '[Friday], [7pm to 8.30pm]' },
+    { groups: ['U9', 'U11'], label: 'U9 and U11', when: 'Friday, 6pm to 7:30pm' },
+    { groups: ['U13', 'U15', 'U18', 'U20'], label: 'U13 and older', when: 'Friday, 6pm to 8pm' },
   ],
   indoorStart: '[January]',
   headOfJuniors: '[Name]',
