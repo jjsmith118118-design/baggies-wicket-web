@@ -4,7 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Users, Trophy, MapPin, ArrowRight } from 'lucide-react';
 import Footer from '@/components/Footer';
 import FixturesResults from '@/components/FixturesResults';
+import { DIRECTIONS_URL, GROUND_ADDRESS } from '@/config/club';
+import { usePageMeta } from '@/hooks/usePageMeta';
 const Index = () => {
+  usePageMeta({
+    title: "Kingston Bagpuize Cricket Club | Cricket near Abingdon, Oxfordshire",
+    description: "Kingston Bagpuize CC, est. 1834. Three Saturday league sides, two Wednesday T20 sides, women's cricket and junior cricket from age 5. New players always welcome.",
+  });
   return <div className="min-h-screen bg-background">
       {/* Hero Section 1 - Kingston Bagpuize Cricket Club */}
       <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
@@ -15,20 +21,21 @@ const Index = () => {
                 Kingston Bagpuize Cricket Club
               </h1>
               <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
-                Welcome to KBCC, our home of cricket in Oxfordshire. We currently operate 3 league, 2 T20 league, a women's and friendly XI.
+                Welcome to KBCC, our home of cricket in Oxfordshire. We currently run 3 Saturday league sides, 2 T20 league sides and a women's team.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                  <a href="https://kingstonbagpuize.play-cricket.com/home" target="_blank" rel="noopener noreferrer">
-                    Join the Club
-                  </a>
+                  <Link to="/members">Join the Club</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 bg-transparent text-maroon-foreground border-maroon-foreground/60 hover:bg-maroon-foreground/10 hover:text-maroon-foreground">
+                  <Link to="/juniors">Junior cricket</Link>
                 </Button>
               </div>
             </div>
 
             <div className="flex justify-center">
-              <img src="/lovable-uploads/070ca7f0-f8c8-47f5-b12f-2406b86bda16.png" alt="Team huddle at Kingston Bagpuize Cricket Club" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
+              <img src="/images/home-team-huddle-1280.jpg" srcSet="/images/home-team-huddle-640.jpg 640w, /images/home-team-huddle-1280.jpg 1280w" sizes="(min-width: 1024px) 50vw, 100vw" width="1280" height="853" alt="Team huddle at Kingston Bagpuize Cricket Club" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
         </div>
@@ -42,7 +49,7 @@ const Index = () => {
           </h2>
           
           <div className="grid md:grid-cols-4 gap-8">
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardHeader>
                 <Users className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Community</CardTitle>
@@ -52,27 +59,27 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardHeader>
                 <Trophy className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Competitive Cricket</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">KBCC continues to climb up the leagues in all formats. Proud of winners of 5 league titles in 2025</p>
+                <p className="text-muted-foreground">KBCC keeps climbing the leagues in every format, with 5 league titles won in 2025.</p>
               </CardContent>
             </Card>
 
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardHeader>
                 <Calendar className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Regular Fixtures</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">With over 180 fixtures in 2024, you'll be sure to find cricket that suits your schedule.</p>
+                <p className="text-muted-foreground">Over 180 fixtures a season, so you'll find cricket that suits your schedule.</p>
               </CardContent>
             </Card>
 
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardHeader>
                 <MapPin className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Facilities</CardTitle>
@@ -90,9 +97,9 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left lg:order-2">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+              <h2 className="text-4xl md:text-6xl font-bold mb-4">
                 Competitive Cricket
-              </h1>
+              </h2>
               <p className="text-xl md:text-2xl mb-6 font-medium text-maroon-foreground/90">
                 Challenge Yourself
               </p>
@@ -112,13 +119,13 @@ const Index = () => {
                   View Fixtures
                 </Button>
                 <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                  <Link to="/contact">Contact Us</Link>
+                  <Link to="/adult-cricket">Adult cricket</Link>
                 </Button>
               </div>
             </div>
 
             <div className="flex justify-center lg:order-1">
-              <img src="/lovable-uploads/bcc03811-3886-486f-a255-186e51b81487.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
+              <img src="/images/home-batting-1280.jpg" srcSet="/images/home-batting-640.jpg 640w, /images/home-batting-1280.jpg 1280w" sizes="(min-width: 1024px) 50vw, 100vw" width="1125" height="750" loading="lazy" decoding="async" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
         </div>
@@ -141,7 +148,7 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-3">
-              <Link to="/contact">
+              <Link to="/members">
                 Become a Member <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
@@ -152,55 +159,18 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Info Section */}
+      {/* Find us */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="hover-scale">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  Season Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Our cricket season runs from April through September, with regular training 
-                  sessions and league matches throughout the summer months.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover-scale">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  All Welcome
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  We welcome players of all skill levels, from complete beginners to 
-                  experienced cricketers looking for competitive play.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover-scale">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  Find Us
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Located in Kingston Bagpuize, Oxfordshire. Easy to reach with 
-                  parking available and great facilities for players and spectators.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold mb-4 text-foreground">Find us</h2>
+          <p className="text-lg text-muted-foreground mb-6">
+            {GROUND_ADDRESS.join(", ")}. Parking available at the ground.
+          </p>
+          <Button asChild size="lg" variant="outline">
+            <a href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer">
+              <MapPin className="h-5 w-5" /> Get directions
+            </a>
+          </Button>
         </div>
       </section>
 

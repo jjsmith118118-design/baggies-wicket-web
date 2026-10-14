@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, RefreshCw } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { fetchPlayCricket } from '@/lib/playCricket';
 
 interface Match {
   id: string;
@@ -28,34 +28,35 @@ const FixturesResults = () => {
   const [matches, setMatches] = useState<Match[]>(liveMatches);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'senior' | 'junior' | 'women'>('all');
-  const { toast } = useToast();
+  const [error, setError] = useState(false);
+  const [resultsSeason, setResultsSeason] = useState<number | null>(null);
 
   useEffect(() => {
     fetchMatchData();
   }, []);
 
-  // Play Cricket API credentials
-  const SITE_ID = '3758';
-  const API_TOKEN = '33239cdb5dc60ba5c114a5dd885a8200';
-  const SEASON = new Date().getFullYear().toString();
+  const SEASON = new Date().getFullYear();
+  const month = new Date().getMonth(); // 0 = January
+  const offSeason = month < 3 || month > 8; // outdoor season runs April-September
 
   // Function to fetch data from Play Cricket API
   const fetchMatchData = async () => {
     setLoading(true);
     try {
-      const [fixturesResponse, resultsResponse] = await Promise.all([
-        fetch(`https://play-cricket.com/api/v2/matches.json?site_id=${SITE_ID}&season=${SEASON}&api_token=${API_TOKEN}`),
-        fetch(`https://play-cricket.com/api/v2/result_summary.json?site_id=${SITE_ID}&season=${SEASON}&api_token=${API_TOKEN}`)
+      setError(false);
+      const [fixturesData, currentResults] = await Promise.all([
+        fetchPlayCricket('matches', SEASON),
+        fetchPlayCricket('results', SEASON),
       ]);
-      
-      if (!fixturesResponse.ok || !resultsResponse.ok) {
-        throw new Error('Failed to fetch data');
-      }
 
-      const [fixturesData, resultsData] = await Promise.all([
-        fixturesResponse.json(),
-        resultsResponse.json()
-      ]);
+      // Before the season has any results, show last season's instead.
+      let resultsData = currentResults;
+      let shownSeason: number | null = null;
+      if (!currentResults.result_summary?.length) {
+        resultsData = await fetchPlayCricket('results', SEASON - 1).catch(() => ({ result_summary: [] }));
+        if (resultsData.result_summary?.length) shownSeason = SEASON - 1;
+      }
+      setResultsSeason(shownSeason);
       
       // Map fixtures
       const mappedFixtures: Match[] = fixturesData.matches?.map((match: any) => {
@@ -97,20 +98,9 @@ const FixturesResults = () => {
 
       const allMatches = [...mappedFixtures, ...mappedResults];
       setMatches(allMatches);
-      
-      toast({
-        title: "Data Updated",
-        description: `Loaded ${allMatches.length} matches from Play Cricket`,
-        duration: 3000,
-      });
-    } catch (error) {
-      console.error('Error fetching Play Cricket data:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch match data from Play Cricket API",
-        variant: "destructive",
-        duration: 3000,
-      });
+    } catch (err) {
+      console.error('Error fetching Play Cricket data:', err);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -220,10 +210,16 @@ const FixturesResults = () => {
             </h3>
             <div className="space-y-3">
               {upcomingMatches.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">No upcoming fixtures</p>
+                <p className="text-muted-foreground text-center py-8">
+                  {error
+                    ? "Fixtures couldn't be loaded right now. Try again shortly."
+                    : offSeason
+                      ? "The outdoor season starts in April. Fixtures will appear here once they're published."
+                      : "No upcoming fixtures"}
+                </p>
               ) : (
                 upcomingMatches.slice(0, 3).map((match) => (
-                  <Card key={match.id} className="p-4 hover-scale hover:bg-accent/50">
+                  <Card key={match.id} className="p-4">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground font-medium">{match.competition}</span>
@@ -267,14 +263,16 @@ const FixturesResults = () => {
           {/* Recent Results */}
           <div className="space-y-4">
             <h3 className="text-2xl font-bold text-foreground">
-              Recent Results
+              {resultsSeason ? `${resultsSeason} Results` : 'Recent Results'}
             </h3>
             <div className="space-y-3">
               {recentResults.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">No recent results</p>
+                <p className="text-muted-foreground text-center py-8">
+                  {error ? "Results couldn't be loaded right now. Try again shortly." : "No recent results"}
+                </p>
               ) : (
                 recentResults.slice(0, 3).map((match) => (
-                  <Card key={match.id} className="p-4 hover-scale hover:bg-accent/50">
+                  <Card key={match.id} className="p-4">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground font-medium">{match.competition}</span>

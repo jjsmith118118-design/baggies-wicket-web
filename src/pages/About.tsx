@@ -1,8 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Trophy, Calendar, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 const About = () => {
+  usePageMeta({
+    title: "About the club | Kingston Bagpuize Cricket Club",
+    description: "The story of Kingston Bagpuize Cricket Club, established in 1834, and our ground at The Sportsfield, Kingston Bagpuize, near Abingdon in Oxfordshire.",
+  });
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -29,13 +34,13 @@ const About = () => {
               </p>
             </div>
             <div>
-              <img src="/lovable-uploads/19c875b6-6018-4895-b06a-e74bc37cf155.png" alt="Cricket players celebrating at Kingston Bagpuize Cricket Club" className="w-full h-auto rounded-lg shadow-lg object-cover" />
+              <img src="/images/about-celebration-1280.jpg" srcSet="/images/about-celebration-640.jpg 640w, /images/about-celebration-1280.jpg 1280w" sizes="(min-width: 1024px) 50vw, 100vw" width="1280" height="853" alt="Cricket players celebrating at Kingston Bagpuize Cricket Club" className="w-full h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
 
           {/* Quick Facts */}
           <div className="grid md:grid-cols-4 gap-6">
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardContent className="pt-6">
                 <Calendar className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">Year Round</h3>
@@ -43,17 +48,17 @@ const About = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardContent className="pt-6">
                 <Users className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">All Ages</h3>
                 <p className="text-muted-foreground">
-                  Junior cricket begins at U9s! <Link to="/contact" className="text-primary hover:underline">Contact us</Link> to get started.
+                  Junior cricket begins at U9s! <Link to="/juniors" className="text-primary hover:underline">Find out about juniors</Link>.
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardContent className="pt-6">
                 <Users className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">Community Focus</h3>
@@ -64,7 +69,7 @@ const About = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center hover-scale">
+            <Card className="text-center">
               <CardContent className="pt-6">
                 <Trophy className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-foreground mb-2">All Abilities Welcome</h3>
