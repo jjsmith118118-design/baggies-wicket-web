@@ -1,7 +1,7 @@
 // Works out the price of a basket ON THE SERVER, including sibling
 // discounts. The browser only ever sends product ids; it never decides prices.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { ADULT, ageGroupFor, hasSiblingRates, membershipFits, ordinal, siblingPrice } from "./rules.js";
+import { ADULT, ageGroupFor, bookingElsewhere, hasSiblingRates, membershipFits, ordinal, siblingPrice } from "./rules.js";
 
 export type BasketItem = { productId: string; childId?: string | null; size?: string | null; quantity?: number };
 
@@ -28,7 +28,7 @@ export async function priceBasket(supabase: SupabaseClient, userId: string, item
   const productIds = [...new Set(items.map((i) => i.productId))];
   const [{ data: products, error: pErr }, { data: members, error: cErr }] = await Promise.all([
     supabase.from("products").select("*").in("id", productIds).eq("active", true),
-    supabase.from("children").select("id, first_name, last_name, date_of_birth").eq("parent_id", userId),
+    supabase.from("children").select("id, first_name, last_name, date_of_birth, plays_up").eq("parent_id", userId),
   ]);
   if (pErr) throw pErr;
   if (cErr) throw cErr;
@@ -74,7 +74,11 @@ export async function priceBasket(supabase: SupabaseClient, userId: string, item
     if (product.category === "membership") {
       if (!member) throw new PricingError("Memberships must be for someone on your account.");
       const group = ageGroupFor(member.date_of_birth, product.season ?? undefined);
-      if (!membershipFits(product.age_group, group)) {
+      const external = bookingElsewhere(group, member.plays_up);
+      if (external) {
+        throw new PricingError(`${member.first_name} is in ${group}, which is booked and paid through ${external.name}, not here.`);
+      }
+      if (!membershipFits(product.age_group, group, member.plays_up)) {
         throw new PricingError(`${product.name} isn't available for ${member.first_name} (${group}).`);
       }
       const key = `${member.id}:${product.season}`;

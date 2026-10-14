@@ -2,7 +2,7 @@ import { CURRENT_SEASON } from "@/config/club";
 import { supabase } from "@/lib/supabase";
 
 export type Profile = { id: string; email: string; full_name: string | null; phone: string | null; is_admin: boolean };
-export type Child = { id: string; parent_id: string; first_name: string; last_name: string; date_of_birth: string };
+export type Child = { id: string; parent_id: string; first_name: string; last_name: string; date_of_birth: string; plays_up?: boolean };
 export type Product = {
   id: string; name: string; description: string | null; category: "membership" | "kit";
   price_pence: number; price_2nd_child_pence: number | null; price_3rd_child_pence: number | null;
@@ -25,7 +25,7 @@ export const formatPence = (pence: number) =>
 export const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
-export { ageGroupFor, isJunior, membershipFits } from "../../api/_lib/rules";
+export { ageGroupFor, bookingElsewhere, canPlayUp, externalBookingFor, isJunior, membershipFits } from "../../api/_lib/rules";
 
 /** Child ids with a PAID membership for the given season. */
 export function paidMembershipChildIds(orders: Order[], season = CURRENT_SEASON) {

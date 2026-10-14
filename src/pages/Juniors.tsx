@@ -7,25 +7,27 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { HeartHandshake, Mail, MapPin, Shirt, Smile, Sparkles } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
-import { ageGroupFor, formatPence, isJunior, type Product } from '@/lib/members';
-import { CONTACT_EMAIL, CURRENT_SEASON, DIRECTIONS_URL, JUNIOR_EMAIL } from '@/config/club';
+import { ageGroupFor, externalBookingFor, formatPence, isJunior, type Product } from '@/lib/members';
+import { AGE_GROUPS, CONTACT_EMAIL, CURRENT_SEASON, DIRECTIONS_URL, JUNIOR_EMAIL } from '@/config/club';
 
 // =================================================================
 // EDIT THIS: everything families read on the Juniors page.
 // Replace anything in [square brackets] with your real details.
 // =================================================================
 const JUNIORS = {
-  youngestAge: '[8]', // youngest age you take
+  youngestAge: '5', // youngest age you take (All Stars starts at 5)
   tasterSessions: 2, // free sessions before joining; set to 0 if you don't offer any
   kitToBorrow: true, // set to false if children need their own bat, pads etc.
   training: [
-    { groups: ['U9', 'U11'], label: 'U9 and U11', when: '[Friday], [6pm to 7pm]' },
+    { groups: ['All Stars', 'Dynamos'], label: 'All Stars and Dynamos', when: '[Friday], [6pm to 7pm]' },
     { groups: ['U13', 'U15', 'U18', 'U20'], label: 'U13 and older', when: '[Friday], [7pm to 8.30pm]' },
   ],
   indoorStart: '[January]',
   headOfJuniors: '[Name]',
   welfareOfficer: '[Name]',
 };
+
+const ecbGroups = AGE_GROUPS.filter((g) => g.bookVia);
 
 const enquiryLink = (subject: string, body: string) =>
   `mailto:${JUNIOR_EMAIL}?cc=${encodeURIComponent(CONTACT_EMAIL)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -118,6 +120,9 @@ const Juniors = () => {
             <Step n={3} title="Join when you're ready">
               If your child enjoys it, register and pay online in a couple of minutes.{' '}
               <Link to="/members" className="text-primary underline underline-offset-2">Members area</Link>
+              {ecbGroups.length > 0 && (
+                <> {ecbGroups.map((g) => g.name).join(' and ')} are booked through the ECB instead (links below).</>
+              )}
             </Step>
           </ol>
         </div>
@@ -173,6 +178,18 @@ const Juniors = () => {
               Sessions are led by our head of juniors, {JUNIORS.headOfJuniors}, with a team of volunteer coaches. Our welfare officer is {JUNIORS.welfareOfficer}.
             </Faq>
             <Faq q="How much does it cost?">
+              {ecbGroups.length > 0 && (
+                <span className="block mb-3">
+                  {ecbGroups.map((g, i) => (
+                    <span key={g.name}>
+                      {i > 0 && ' and '}
+                      <a href={g.bookVia!.url} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">{g.name}</a>
+                    </span>
+                  ))}{' '}
+                  (ages {JUNIORS.youngestAge} to {ecbGroups[ecbGroups.length - 1].maxAge}) are booked and paid through the ECB, and include a kit pack.
+                  Club membership below is for older juniors.
+                </span>
+              )}
               {taster > 0 && `Your first ${taster === 1 ? 'session is' : `${taster} sessions are`} free. `}
               {juniorSub ? (
                 <>
@@ -267,6 +284,14 @@ function AgeFinder() {
         {group && isJunior(group) && (
           <div className="rounded-xl bg-background p-5 border border-border">
             <p className="text-2xl font-bold text-primary mb-1">{group} in {CURRENT_SEASON}</p>
+            {externalBookingFor(group) && (
+              <p className="text-muted-foreground mb-1">
+                {group} is booked and paid through the ECB.{' '}
+                <a href={externalBookingFor(group)!.url} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+                  Book {group}
+                </a>
+              </p>
+            )}
             {session ? (
               <p className="text-muted-foreground">Training: {session.when}</p>
             ) : (

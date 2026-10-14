@@ -11,10 +11,11 @@ import {
 import { CheckCircle2, ExternalLink, Loader2, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { PlayUpLink, StopPlayingUpLink } from "./PlayUpDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { CURRENT_SEASON } from "@/config/club";
 import {
-  ageGroupFor, callApi, formatDate, formatPence, isJunior, paidMembershipChildIds, type Child, type Order,
+  ageGroupFor, bookingElsewhere, callApi, canPlayUp, externalBookingFor, formatDate, formatPence, isJunior, paidMembershipChildIds, type Child, type Order,
 } from "@/lib/members";
 
 const statusStyles: Record<Order["status"], string> = {
@@ -79,7 +80,7 @@ const MembersDashboard = () => {
   const paidIds = paidMembershipChildIds(orders);
   const adults = children.filter((c) => !isJunior(ageGroupFor(c.date_of_birth)));
   const kids = children.filter((c) => isJunior(ageGroupFor(c.date_of_birth)));
-  const unpaidKids = kids.filter((c) => !paidIds.has(c.id));
+  const unpaidKids = kids.filter((c) => !paidIds.has(c.id) && !bookingElsewhere(ageGroupFor(c.date_of_birth), c.plays_up));
   const visibleOrders = orders.filter((o) => o.status !== "pending" && o.status !== "cancelled");
 
   return (
@@ -96,7 +97,7 @@ const MembersDashboard = () => {
           <p className="text-muted-foreground">Playing or joining as a social member? Add yourself here.</p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {adults.map((p) => <PersonCard key={p.id} person={p} paid={paidIds.has(p.id)} onRemove={removeChild} />)}
+            {adults.map((p) => <PersonCard key={p.id} person={p} paid={paidIds.has(p.id)} onRemove={removeChild} onChanged={load} />)}
           </div>
         )}
       </section>
@@ -124,7 +125,7 @@ const MembersDashboard = () => {
         ) : (
           <>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {kids.map((p) => <PersonCard key={p.id} person={p} paid={paidIds.has(p.id)} onRemove={removeChild} />)}
+              {kids.map((p) => <PersonCard key={p.id} person={p} paid={paidIds.has(p.id)} onRemove={removeChild} onChanged={load} />)}
             </div>
             {unpaidKids.length > 0 && (
               <p className="text-sm text-muted-foreground mt-3">
@@ -181,16 +182,22 @@ const MembersDashboard = () => {
   );
 };
 
-function PersonCard({ person, paid, onRemove }: { person: Child; paid: boolean; onRemove: (c: Child) => void }) {
+function PersonCard({ person, paid, onRemove, onChanged }: {
+  person: Child; paid: boolean; onRemove: (c: Child) => void; onChanged: () => void;
+}) {
   const group = ageGroupFor(person.date_of_birth);
   const junior = isJunior(group);
+  const external = bookingElsewhere(group, person.plays_up);
+  const playingUp = !!person.plays_up && !!externalBookingFor(group) && canPlayUp(group);
   return (
-    <Card className={paid || !junior ? "" : "border-amber-300"}>
+    <Card className={paid || !junior || external ? "" : "border-amber-300"}>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
           <div>
             <CardTitle className="text-lg">{person.first_name} {person.last_name}</CardTitle>
-            <p className="text-sm text-muted-foreground">{junior ? `${group} in ${CURRENT_SEASON}` : "Adult"}</p>
+            <p className="text-sm text-muted-foreground">
+              {junior ? `${group} in ${CURRENT_SEASON}${playingUp ? " · playing up" : ""}` : "Adult"}
+            </p>
           </div>
           <Button variant="ghost" size="icon" aria-label={`Remove ${person.first_name}`} onClick={() => onRemove(person)}>
             <Trash2 className="text-muted-foreground" />
@@ -198,7 +205,17 @@ function PersonCard({ person, paid, onRemove }: { person: Child; paid: boolean; 
         </div>
       </CardHeader>
       <CardContent>
-        {paid ? (
+        {external ? (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground text-sm">Booked through {external.name}</span>
+              <Button asChild size="sm" variant="outline">
+                <a href={external.url} target="_blank" rel="noopener noreferrer">Book <ExternalLink /></a>
+              </Button>
+            </div>
+            {canPlayUp(group) && <PlayUpLink child={person} group={group} onChanged={onChanged} />}
+          </div>
+        ) : paid ? (
           <p className="flex items-center gap-2 text-green-700 font-medium">
             <CheckCircle2 className="h-5 w-5" /> {CURRENT_SEASON} {junior ? "subs" : "membership"} paid
           </p>
@@ -211,6 +228,9 @@ function PersonCard({ person, paid, onRemove }: { person: Child; paid: boolean; 
               <Link to={`/members/shop?child=${person.id}`}>{junior ? "Pay subs" : "Join"}</Link>
             </Button>
           </div>
+        )}
+        {playingUp && !paid && (
+          <div className="mt-2"><StopPlayingUpLink child={person} group={group} onChanged={onChanged} /></div>
         )}
       </CardContent>
     </Card>

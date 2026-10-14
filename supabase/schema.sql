@@ -23,6 +23,7 @@ create table public.children (
   first_name     text not null,
   last_name      text not null,
   date_of_birth  date not null,
+  plays_up       boolean not null default false, -- playing in an older age group (coach agreed)
   created_at     timestamptz not null default now()
 );
 

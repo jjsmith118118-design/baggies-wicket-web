@@ -9,10 +9,10 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { CLUB_EMAIL, CURRENT_SEASON } from "@/config/club";
 import {
-  ageGroupFor, formatDate, formatPence, isJunior, paidMembershipChildIds, type Child, type Order, type Profile,
+  ageGroupFor, bookingElsewhere, externalBookingFor, formatDate, formatPence, isJunior, paidMembershipChildIds, type Child, type Order, type Profile,
 } from "@/lib/members";
 
-type Row = { child: Child; group: string; parent: Profile | undefined; paid: boolean };
+type Row = { child: Child; group: string; parent: Profile | undefined; paid: boolean; external: boolean; playingUp: boolean };
 
 const MembersAdmin = () => {
   const { profile } = useAuth();
@@ -42,7 +42,12 @@ const MembersAdmin = () => {
     const paidIds = paidMembershipChildIds(orders);
     const parentMap = new Map(parents.map((p) => [p.id, p]));
     return children
-      .map((child) => ({ child, group: ageGroupFor(child.date_of_birth), parent: parentMap.get(child.parent_id), paid: paidIds.has(child.id) }))
+      .map((child) => {
+        const group = ageGroupFor(child.date_of_birth);
+        const external = !!bookingElsewhere(group, child.plays_up);
+        const playingUp = !!externalBookingFor(group) && !external;
+        return { child, group, parent: parentMap.get(child.parent_id), paid: paidIds.has(child.id), external, playingUp };
+      })
       .filter((r) => (segment === "juniors" ? isJunior(r.group) : !isJunior(r.group)));
   }, [children, parents, orders, segment]);
 
@@ -56,13 +61,14 @@ const MembersAdmin = () => {
   const q = search.trim().toLowerCase();
   const visible = rows.filter((r) => {
     if (filter === "paid" && !r.paid) return false;
-    if (filter === "unpaid" && r.paid) return false;
+    if (filter === "unpaid" && (r.paid || r.external)) return false;
     if (!q) return true;
     return [r.child.first_name, r.child.last_name, r.parent?.full_name, r.parent?.email, r.group]
       .some((v) => v?.toLowerCase().includes(q));
   });
 
-  const unpaidRows = rows.filter((r) => !r.paid);
+  const payRows = rows.filter((r) => !r.external); // ECB groups don't pay here
+  const unpaidRows = payRows.filter((r) => !r.paid);
   const unpaidEmails = [...new Set(unpaidRows.map((r) => r.parent?.email).filter(Boolean))] as string[];
 
   const seasonItems = orders.flatMap((o) => o.order_items);
@@ -95,8 +101,8 @@ const MembersAdmin = () => {
   const downloadCsv = () => {
     const header = ["Name", "Age group", "Date of birth", "Account holder", "Email", "Phone", `${CURRENT_SEASON} membership`];
     const lines = rows.map((r) => [
-      `${r.child.first_name} ${r.child.last_name}`, r.group ?? "", r.child.date_of_birth,
-      r.parent?.full_name ?? "", r.parent?.email ?? "", r.parent?.phone ?? "", r.paid ? "Paid" : "Unpaid",
+      `${r.child.first_name} ${r.child.last_name}`, r.playingUp ? `${r.group} (playing up)` : r.group, r.child.date_of_birth,
+      r.parent?.full_name ?? "", r.parent?.email ?? "", r.parent?.phone ?? "", r.external ? "Via ECB" : r.paid ? "Paid" : "Unpaid",
     ]);
     const csv = [header, ...lines].map((cols) => cols.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
@@ -117,7 +123,8 @@ const MembersAdmin = () => {
       </div>
 
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Stat label={`${CURRENT_SEASON} memberships paid`} value={`${rows.length - unpaidRows.length} of ${rows.length}`} />
+        <Stat label={`${CURRENT_SEASON} memberships paid`} value={`${payRows.length - unpaidRows.length} of ${payRows.length}`}
+              sub={rows.length > payRows.length ? `plus ${rows.length - payRows.length} booked via the ECB` : undefined} />
         <Stat label={segment === "juniors" ? "Still to pay" : "Not yet joined"} value={String(unpaidRows.length)}
               tone={unpaidRows.length && segment === "juniors" ? "warn" : undefined} />
         <Stat label={`${label} memberships collected`} value={formatPence(subsCollected)}
@@ -169,14 +176,19 @@ const MembersAdmin = () => {
                 ) : visible.map((r) => (
                   <TableRow key={r.child.id}>
                     <TableCell className="font-medium">{r.child.first_name} {r.child.last_name}</TableCell>
-                    <TableCell>{r.group}</TableCell>
+                    <TableCell>
+                      {r.group}
+                      {r.playingUp && <Badge variant="outline" className="ml-2 border-primary/40 text-primary">Playing up</Badge>}
+                    </TableCell>
                     <TableCell>{r.parent?.full_name ?? "–"}</TableCell>
                     <TableCell className="text-sm">
                       <a href={`mailto:${r.parent?.email}`} className="text-primary hover:underline">{r.parent?.email}</a>
                       {r.parent?.phone && <div className="text-muted-foreground">{r.parent.phone}</div>}
                     </TableCell>
                     <TableCell className="text-right">
-                      {r.paid
+                      {r.external
+                        ? <Badge variant="outline">Via ECB</Badge>
+                        : r.paid
                         ? <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Paid</Badge>
                         : <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">Unpaid</Badge>}
                     </TableCell>

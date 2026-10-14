@@ -15,6 +15,9 @@ alter table public.order_items
   add column if not exists full_price_pence integer,
   add column if not exists sibling_position integer;
 
+alter table public.children
+  add column if not exists plays_up boolean not null default false;
+
 -- Switch off the separate U11–U20 memberships (keeps U9 and Adult)
 update public.products set active = false
 where category = 'membership' and season = '2027'

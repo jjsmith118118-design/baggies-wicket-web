@@ -7,10 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CheckCircle2, ExternalLink, Loader2, ShoppingBasket, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { PlayUpLink } from "./PlayUpDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { ADULT, CURRENT_SEASON, KIT_STORE_URL } from "@/config/club";
 import {
-  ageGroupFor, callApi, formatPence, isJunior, paidMembershipChildIds, type Child, type Order, type Product,
+  ageGroupFor, bookingElsewhere, callApi, canPlayUp, externalBookingFor, formatPence, isJunior, paidMembershipChildIds, type Child, type Order, type Product,
 } from "@/lib/members";
 
 type BasketLine = { key: string; product: Product; child: Child | null; size: string | null; quantity: number };
@@ -60,12 +61,22 @@ const MembersShop = () => {
 
   const juniorMembershipFor = (group: string) =>
     memberships.find((m) => m.age_group === group) ?? memberships.find((m) => m.age_group === null) ?? null;
+  // Children playing up out of an ECB group pay the standard junior sub.
+  const juniorProductFor = (c: Child) => {
+    const group = ageGroupFor(c.date_of_birth);
+    return c.plays_up && externalBookingFor(group) ? memberships.find((m) => m.age_group === null) ?? null : juniorMembershipFor(group);
+  };
+  const reloadChildren = async () => {
+    if (!supabase || !session) return;
+    const { data } = await supabase.from("children").select("*").eq("parent_id", session.user.id).order("date_of_birth", { ascending: false });
+    setChildren((data as Child[]) ?? []);
+  };
 
   const adultMembers = children.filter((c) => !isJunior(ageGroupFor(c.date_of_birth)));
   const juniorMembers = children.filter((c) => isJunior(ageGroupFor(c.date_of_birth)));
   const payableKids = juniorMembers
-    .filter((c) => !paidIds.has(c.id))
-    .map((c) => ({ child: c, product: juniorMembershipFor(ageGroupFor(c.date_of_birth)) }))
+    .filter((c) => !paidIds.has(c.id) && !bookingElsewhere(ageGroupFor(c.date_of_birth), c.plays_up))
+    .map((c) => ({ child: c, product: juniorProductFor(c) }))
     .filter((x): x is { child: Child; product: Product } => x.product !== null);
   const kidsNotInBasket = payableKids.filter(
     (x) => !basket.some((l) => l.child?.id === x.child.id && l.product.category === "membership"),
@@ -196,9 +207,15 @@ const MembersShop = () => {
                       return (
                         <Card key={child.id} className={highlightChild === child.id && !paidIds.has(child.id) ? "ring-2 ring-primary" : ""}>
                           <CardContent className="py-4 flex flex-wrap items-center justify-between gap-3">
-                            <JuniorRow child={child} group={group} product={juniorMembershipFor(group)}
+                            {bookingElsewhere(group, child.plays_up) ? (
+                              <ExternalRow child={child} group={group} booking={bookingElsewhere(group, child.plays_up)!}
+                                           onChanged={reloadChildren} />
+                            ) : (
+                            <JuniorRow child={child} group={child.plays_up && externalBookingFor(group) ? `${group} · playing up` : group}
+                                       product={juniorProductFor(child)}
                                        paid={paidIds.has(child.id)} inBasket={inBasketFor(child)}
                                        solo={soloPrices[child.id]} onAdd={addLine} />
+                            )}
                           </CardContent>
                         </Card>
                       );
@@ -347,6 +364,23 @@ function JuniorRow({ child, group, product, paid, inBasket, solo, onAdd }: {
           {inBasket ? "In basket" : "Add to basket"}
         </Button>
       ) : null}
+    </>
+  );
+}
+
+function ExternalRow({ child, group, booking, onChanged }: {
+  child: Child; group: string; booking: { name: string; url: string }; onChanged: () => void;
+}) {
+  return (
+    <>
+      <div>
+        <p className="font-semibold">{child.first_name} {child.last_name} <span className="font-normal text-muted-foreground">· {group}</span></p>
+        <p className="text-sm text-muted-foreground">{group} is booked and paid through {booking.name}, so there's nothing to pay here.</p>
+        {canPlayUp(group) && <div className="mt-1"><PlayUpLink child={child} group={group} onChanged={onChanged} /></div>}
+      </div>
+      <Button asChild variant="outline">
+        <a href={booking.url} target="_blank" rel="noopener noreferrer">Book {group} <ExternalLink /></a>
+      </Button>
     </>
   );
 }

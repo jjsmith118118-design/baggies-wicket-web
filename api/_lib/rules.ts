@@ -5,15 +5,28 @@
 
 export const CURRENT_SEASON = "2027";
 
-// Junior age groups, youngest first. Anyone older than the last
-// group counts as an adult.
-export const AGE_GROUPS = ["U9", "U11", "U13", "U15", "U18", "U20"];
+// Junior age groups, youngest first. Each group covers children up to and
+// including maxAge (their age on 31 August before the season). Anyone older
+// than the last group counts as an adult. Rename or re-band these freely.
+// Groups with "bookVia" are booked and paid OUTSIDE this site (e.g. through
+// the ECB), so the members area won't take payment for them. Replace the URLs
+// with your club's own ECB booking links if you have them.
+// "canPlayUp": a parent can confirm (with a coach's agreement) that their
+// child plays in an older age group, and then pay club membership instead.
+export const AGE_GROUPS: { name: string; maxAge: number; bookVia?: { name: string; url: string }; canPlayUp?: boolean }[] = [
+  { name: "All Stars", maxAge: 8, canPlayUp: true, bookVia: { name: "the ECB", url: "https://www.ecb.co.uk/play/all-stars" } }, // ages 5–8
+  { name: "Dynamos", maxAge: 11, canPlayUp: true, bookVia: { name: "the ECB", url: "https://www.ecb.co.uk/play/dynamoscricket" } }, // ages 9–11
+  { name: "U13", maxAge: 12 },
+  { name: "U15", maxAge: 14 },
+  { name: "U18", maxAge: 17 },
+  { name: "U20", maxAge: 19 },
+];
 
 export const ADULT = "Adult";
 
 /**
  * Age group for a season, using the ECB rule (age at 31 August before
- * the season). e.g. for 2027, a child who is 10 on 31 Aug 2026 plays U11.
+ * the season). e.g. for 2027, a child who is 10 on 31 Aug 2026 is in Dynamos.
  * Returns "Adult" for anyone older than the oldest junior group.
  */
 export function ageGroupFor(dateOfBirth: string, season = CURRENT_SEASON): string {
@@ -23,13 +36,28 @@ export function ageGroupFor(dateOfBirth: string, season = CURRENT_SEASON): strin
   const hadBirthday =
     cutoff.getMonth() > dob.getMonth() || (cutoff.getMonth() === dob.getMonth() && cutoff.getDate() >= dob.getDate());
   if (!hadBirthday) age -= 1;
-  return AGE_GROUPS.find((g) => age < Number(g.replace(/\D/g, ""))) ?? ADULT;
+  return AGE_GROUPS.find((g) => age <= g.maxAge)?.name ?? ADULT;
 }
 
 export const isJunior = (group: string) => group !== ADULT;
 
+/** If this age group is booked elsewhere (e.g. the ECB), where to send people. */
+export const externalBookingFor = (group: string) => AGE_GROUPS.find((g) => g.name === group)?.bookVia ?? null;
+
+/** Can children in this age group play up into older groups? */
+export const canPlayUp = (group: string) => !!AGE_GROUPS.find((g) => g.name === group)?.canPlayUp;
+
+/** Where this child books instead of paying here, or null if they pay club membership. */
+export function bookingElsewhere(group: string, playsUp = false) {
+  const booking = externalBookingFor(group);
+  if (!booking) return null;
+  return playsUp && canPlayUp(group) ? null : booking;
+}
+
 /** Can this membership product be bought for someone in this age group? */
-export function membershipFits(productAgeGroup: string | null, personGroup: string) {
+export function membershipFits(productAgeGroup: string | null, personGroup: string, playsUp = false) {
+  if (bookingElsewhere(personGroup, playsUp)) return false; // paid through the ECB, not here
+  if (playsUp && externalBookingFor(personGroup)) return productAgeGroup === null; // playing up: standard junior sub
   if (productAgeGroup === ADULT) return personGroup === ADULT;
   if (productAgeGroup === null) return isJunior(personGroup); // "any junior"
   return productAgeGroup === personGroup;
