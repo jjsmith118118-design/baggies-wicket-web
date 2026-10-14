@@ -156,7 +156,7 @@ const MembersDashboard = () => {
                       <span className="font-semibold">{formatPence(order.total_pence)}</span>
                       {order.receipt_url && (
                         <a href={order.receipt_url} target="_blank" rel="noopener noreferrer"
-                           className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                           className="text-sm text-primary hover:underline inline-flex items-center gap-1 py-1.5">
                           Receipt <ExternalLink className="h-3 w-3" />
                         </a>
                       )}

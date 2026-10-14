@@ -31,7 +31,7 @@ export function PlayUpLink({ child, group, onChanged }: { child: Child; group: s
   return (
     <>
       <button type="button" onClick={() => { setAgreed(false); setOpen(true); }}
-              className="text-sm text-primary underline underline-offset-2 hover:no-underline">
+              className="inline-block py-1.5 text-sm text-primary underline underline-offset-2 hover:no-underline">
         Playing in an older age group?
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -80,7 +80,7 @@ export function StopPlayingUpLink({ child, group, onChanged }: { child: Child; g
     onChanged();
   };
   return (
-    <button type="button" onClick={undo} className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground">
+    <button type="button" onClick={undo} className="inline-block py-1.5 text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground">
       Not playing up?
     </button>
   );

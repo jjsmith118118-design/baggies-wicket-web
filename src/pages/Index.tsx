@@ -5,7 +5,12 @@ import { Calendar, Users, Trophy, MapPin, ArrowRight } from 'lucide-react';
 import Footer from '@/components/Footer';
 import FixturesResults from '@/components/FixturesResults';
 import { DIRECTIONS_URL, GROUND_ADDRESS } from '@/config/club';
+import { usePageMeta } from '@/hooks/usePageMeta';
 const Index = () => {
+  usePageMeta({
+    title: "Kingston Bagpuize Cricket Club | Cricket near Abingdon, Oxfordshire",
+    description: "Kingston Bagpuize CC, est. 1834. Three Saturday league sides, two Wednesday T20 sides, women's cricket and junior cricket from age 5. New players always welcome.",
+  });
   return <div className="min-h-screen bg-background">
       {/* Hero Section 1 - Kingston Bagpuize Cricket Club */}
       <section className="bg-maroon text-maroon-foreground py-20 overflow-hidden">
@@ -16,7 +21,7 @@ const Index = () => {
                 Kingston Bagpuize Cricket Club
               </h1>
               <p className="text-lg md:text-xl mb-8 text-maroon-foreground/80">
-                Welcome to KBCC, our home of cricket in Oxfordshire. We currently operate 3 league, 2 T20 league, a women's and friendly XI.
+                Welcome to KBCC, our home of cricket in Oxfordshire. We currently run 3 Saturday league sides, 2 T20 league sides and a women's team.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -30,7 +35,7 @@ const Index = () => {
             </div>
 
             <div className="flex justify-center">
-              <img src="/lovable-uploads/070ca7f0-f8c8-47f5-b12f-2406b86bda16.png" alt="Team huddle at Kingston Bagpuize Cricket Club" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
+              <img src="/images/home-team-huddle-1280.jpg" srcSet="/images/home-team-huddle-640.jpg 640w, /images/home-team-huddle-1280.jpg 1280w" sizes="(min-width: 1024px) 50vw, 100vw" width="1280" height="853" alt="Team huddle at Kingston Bagpuize Cricket Club" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
         </div>
@@ -114,13 +119,13 @@ const Index = () => {
                   View Fixtures
                 </Button>
                 <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-                  <Link to="/contact">Contact Us</Link>
+                  <Link to="/adult-cricket">Adult cricket</Link>
                 </Button>
               </div>
             </div>
 
             <div className="flex justify-center lg:order-1">
-              <img src="/lovable-uploads/bcc03811-3886-486f-a255-186e51b81487.png" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
+              <img src="/images/home-batting-1280.jpg" srcSet="/images/home-batting-640.jpg 640w, /images/home-batting-1280.jpg 1280w" sizes="(min-width: 1024px) 50vw, 100vw" width="1125" height="750" loading="lazy" decoding="async" alt="Competitive cricket action" className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover" />
             </div>
           </div>
         </div>

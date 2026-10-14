@@ -32,7 +32,7 @@ const MembersLogin = () => {
     <div className="min-h-[70vh] bg-muted/40 flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-md">
         <img
-          src="/lovable-uploads/a5ad1992-fbda-44b7-a120-24dc8f17ed02.png"
+          src="/images/logo-160.png"
           alt="Kingston Bagpuize CC"
           className="h-20 w-20 mx-auto mb-6"
         />

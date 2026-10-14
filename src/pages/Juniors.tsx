@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { HeartHandshake, Mail, MapPin, Shirt, Smile, Sparkles } from 'lucide-react';
+import { HeartHandshake, Mail, MapPin, Sparkles, Sprout, TrendingUp, Trophy, Users } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
 import { ageGroupFor, externalBookingFor, formatPence, isJunior, type Product } from '@/lib/members';
 import { AGE_GROUPS, CONTACT_EMAIL, CURRENT_SEASON, DIRECTIONS_URL, JUNIOR_EMAIL } from '@/config/club';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 // =================================================================
 // EDIT THIS: everything families read on the Juniors page.
@@ -23,6 +24,8 @@ const JUNIORS = {
     { groups: ['U13', 'U15', 'U18', 'U20'], label: 'U13 and older', when: '[Friday], [7pm to 8.30pm]' },
   ],
   indoorStart: '[January]',
+  // What older juniors play. Replace with your real teams and leagues.
+  matches: 'Our U13, U15 and U18 teams play league and cup matches across Oxfordshire.',
   headOfJuniors: '[Name]',
   welfareOfficer: '[Name]',
 };
@@ -38,10 +41,14 @@ const ASK_LINK = enquiryLink(
 );
 const TRY_LINK = enquiryLink(
   'Taster session enquiry',
-  "Hi,\n\nMy son/daughter is interested in joining the club and doing a taster session. Could you tell me more please?\n\nChild's name and age:\n\nThanks,\n",
+  "Hi,\n\nMy son/daughter is interested in joining the club and doing a taster session. Could you tell me more please?\n\nChild's name and age:\nHave they played before? (if so, where):\n\nThanks,\n",
 );
 
 const Juniors = () => {
+  usePageMeta({
+    title: "Junior cricket for ages 5 to 19 | Kingston Bagpuize Cricket Club",
+    description: "All Stars, Dynamos and junior teams up to U20 near Abingdon, Oxfordshire. Beginners and experienced players welcome. Try a session with KBCC.",
+  });
   const [memberships, setMemberships] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -65,10 +72,10 @@ const Juniors = () => {
       <section className="bg-primary text-primary-foreground">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 grid lg:grid-cols-2 gap-10 items-center">
           <div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Come and play cricket</h1>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">Junior cricket for every young player</h1>
             <p className="text-xl text-primary-foreground/85 mb-8 max-w-xl">
-              Friendly junior cricket for girls and boys aged {JUNIORS.youngestAge} to 19 in Kingston Bagpuize.
-              No experience needed{JUNIORS.kitToBorrow ? ', and no kit to buy' : ''}. Just bring a big smile.
+              Girls and boys aged {JUNIORS.youngestAge} to 19, whether they're picking up a bat for the first time or
+              already playing matches. There's a place for them at Kingston Bagpuize.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button asChild size="lg" variant="secondary" className="text-base">
@@ -80,26 +87,40 @@ const Juniors = () => {
               </Button>
             </div>
           </div>
-          <img src="/lovable-uploads/87b0f990-614a-4670-8520-e81472557d2d.png" alt="Batter playing a shot at Kingston Bagpuize Cricket Club"
+          <img src="/images/juniors-batting-1280.jpg" srcSet="/images/juniors-batting-640.jpg 640w, /images/juniors-batting-1280.jpg 1280w" sizes="(min-width: 1024px) 50vw, 100vw" width="1100" height="733" alt="Batter playing a shot at Kingston Bagpuize Cricket Club"
                className="w-full rounded-2xl shadow-xl object-cover aspect-[4/3]" />
         </div>
       </section>
 
-      {/* Reassurance */}
+      {/* Two routes in */}
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold mb-10 text-center">New to cricket? You're in the right place</h2>
+          <h2 className="text-3xl font-bold mb-3 text-center">Something for every young cricketer</h2>
+          <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
+            Wherever your child is with their cricket, we'll help them enjoy it and get better.
+          </p>
+          <div className="grid md:grid-cols-2 gap-6 mb-14">
+            <Route icon={<Sprout />} title="Just starting out">
+              <p>Never played before? Lots of children start with no experience at all. The basics are taught through games, so everyone joins in from day one.</p>
+              {ecbGroups.length > 0 && (
+                <p>Our youngest players start with {ecbGroups.map((g) => g.name).join(' and ')}, the ECB's fun introduction to cricket.</p>
+              )}
+              {JUNIORS.kitToBorrow && <p>No kit to buy. We lend bats, pads, helmets and balls.</p>}
+            </Route>
+            <Route icon={<Trophy />} title="Already playing">
+              <p>Experienced juniors train with their age group and work on their game with our coaches. {JUNIORS.matches}</p>
+              <p>Coming from another club or school cricket? You're very welcome. Tell us where they've played and we'll find the right group.</p>
+            </Route>
+          </div>
           <div className="grid md:grid-cols-3 gap-10">
-            <Point icon={<Smile />} title="Never played? That's fine">
-              Lots of children start with no experience at all. The basics are taught through games, so everyone can join in from day one.
-            </Point>
             <Point icon={<HeartHandshake />} title="Girls and boys welcome">
-              Cricket is for everyone. Children train in age groups, so they're with others their own age and ability.
+              Cricket is for everyone. Children train in age groups, so they're with others their own age.
             </Point>
-            <Point icon={<Shirt />} title={JUNIORS.kitToBorrow ? 'No kit to buy' : 'Easy to get started'}>
-              {JUNIORS.kitToBorrow
-                ? 'We lend bats, pads, helmets and balls. Just come in trainers and comfy sports clothes.'
-                : 'Comfy sports clothes and trainers are all you need for the first session. We can advise on kit later.'}
+            <Point icon={<TrendingUp />} title="Coaching at every level">
+              Coaches work with each child at their own level, from first catches to match tactics.
+            </Point>
+            <Point icon={<Users />} title="A path into adult cricket">
+              When they're ready, juniors can step up into our adult teams: three Saturday league sides, two T20 sides and a women's team.
             </Point>
           </div>
         </div>
@@ -111,11 +132,11 @@ const Juniors = () => {
           <h2 className="text-3xl font-bold mb-10 text-center">How to get started</h2>
           <ol className="space-y-8">
             <Step n={1} title="Say hello">
-              Drop our junior coordinator an email with your child's name and age. We'll tell you which session to come to.{' '}
+              Email our junior coordinator with your child's name, age and whether they've played before. We'll suggest the right session.{' '}
               <a href={TRY_LINK} className="text-primary underline underline-offset-2">Send an email</a>
             </Step>
             <Step n={2} title={taster > 0 ? `Come along for ${taster === 1 ? 'a free session' : `${taster} free sessions`}` : 'Come along and try it'}>
-              Turn up a few minutes early and a coach will meet you. Parents are welcome to stay and watch.
+              Turn up a few minutes early and a coach will meet you. New players get a feel for the game; experienced players train with their age group and meet the coaches. Parents are welcome to stay and watch.
             </Step>
             <Step n={3} title="Join when you're ready">
               If your child enjoys it, register and pay online in a couple of minutes.{' '}
@@ -169,7 +190,7 @@ const Juniors = () => {
               {JUNIORS.kitToBorrow && ' We provide all the cricket equipment.'}
             </Faq>
             <Faq q="Do they need to buy cricket whites?">
-              Not to start with. Whites are only needed for matches, and the coaches will let you know when your child is ready to play in one.
+              Not for training. Whites are needed for matches, so if your child is new the coaches will let you know when they're ready to play in one.
             </Faq>
             <Faq q="What if we can't make every week?">
               That's absolutely fine. Come when you can. Children get the most out of it with regular sessions, but there's no pressure.
@@ -203,6 +224,12 @@ const Juniors = () => {
                 'After that, junior membership covers the whole season. Ask us for current prices.'
               )}
             </Faq>
+            <Faq q="My child already plays. Will they get matches?">
+              {JUNIORS.matches} Coaches pick teams based on age and ability, and stronger players may be invited to play up an age group.
+            </Faq>
+            <Faq q="Can my child join from another club?">
+              Yes. Send us a quick email saying where they've played and what age group, and our junior coordinator will help with the move.
+            </Faq>
             <Faq q="My child has never held a bat. Will they feel left out?">
               Not at all. Coaches work with every child at their own level, and plenty of others will be just starting too.
             </Faq>
@@ -217,9 +244,9 @@ const Juniors = () => {
       <section className="py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Sparkles className="h-10 w-10 text-primary mx-auto mb-4" />
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to give it a go?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to join us?</h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Send us a quick email and we'll see you at the next session.
+            First session or next season, send us a quick email and we'll see you at training.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild size="lg"><a href={TRY_LINK}>Try a session</a></Button>
@@ -232,6 +259,20 @@ const Juniors = () => {
     </div>
   );
 };
+
+function Route({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground [&_svg]:h-6 [&_svg]:w-6">
+          {icon}
+        </div>
+        <h3 className="text-2xl font-bold">{title}</h3>
+      </div>
+      <div className="space-y-3 text-muted-foreground">{children}</div>
+    </div>
+  );
+}
 
 function Point({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (

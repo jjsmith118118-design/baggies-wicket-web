@@ -4,6 +4,7 @@ import { Loader2, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import MembersLogin from "./MembersLogin";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const tabClass = ({ isActive }: { isActive: boolean }) =>
   `px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
@@ -12,6 +13,11 @@ const tabClass = ({ isActive }: { isActive: boolean }) =>
 
 const MembersLayout = () => {
   const { session, profile, loading, signOut } = useAuth();
+  usePageMeta({
+    title: "Members area | Kingston Bagpuize Cricket Club",
+    description: "Log in to pay subs, buy club kit and see your payment history.",
+    noIndex: true,
+  });
 
   if (!supabase) {
     return (

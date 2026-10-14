@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-3 mb-6">
               <img 
-                src="/lovable-uploads/a5ad1992-fbda-44b7-a120-24dc8f17ed02.png" 
+                src="/images/logo-96.png" 
                 alt="Kingston Bagpuize Cricket Club Logo" 
                 className="h-12 w-12"
               />
@@ -37,7 +37,7 @@ const Footer = () => {
                   <p>Abingdon Road (A415)</p>
                   <p>Kingston Bagpuize, Abingdon</p>
                   <p>OX13 5GD</p>
-                  <a href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 opacity-90 hover:opacity-100">
+                  <a href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer" className="inline-block py-1 underline underline-offset-2 opacity-90 hover:opacity-100">
                     Get directions
                   </a>
                 </div>
@@ -46,7 +46,7 @@ const Footer = () => {
                 <Mail className="h-4 w-4 opacity-80" />
                 <a 
                   href={`mailto:${CONTACT_EMAIL}`} 
-                  className="text-sm opacity-90 hover:opacity-100 transition-opacity"
+                  className="inline-block py-1 text-sm opacity-90 hover:opacity-100 transition-opacity break-all"
                 >
                   {CONTACT_EMAIL}
                 </a>
@@ -60,19 +60,22 @@ const Footer = () => {
             <div className="space-y-2">
               <Link 
                 to="/about" 
-                className="block text-sm opacity-90 hover:opacity-100 transition-opacity"
+                className="block py-1 text-sm opacity-90 hover:opacity-100 transition-opacity"
               >
                 About Us
               </Link>
-              <Link to="/juniors" className="block text-sm opacity-90 hover:opacity-100 transition-opacity">
+              <Link to="/adult-cricket" className="block py-1 text-sm opacity-90 hover:opacity-100 transition-opacity">
+                Adult Cricket
+              </Link>
+              <Link to="/juniors" className="block py-1 text-sm opacity-90 hover:opacity-100 transition-opacity">
                 Juniors
               </Link>
-              <Link to="/members" className="block text-sm opacity-90 hover:opacity-100 transition-opacity">
+              <Link to="/members" className="block py-1 text-sm opacity-90 hover:opacity-100 transition-opacity">
                 Members
               </Link>
               <a 
                 href="/#fixtures-results"
-                className="block text-sm opacity-90 hover:opacity-100 transition-opacity"
+                className="block py-1 text-sm opacity-90 hover:opacity-100 transition-opacity"
                 onClick={(e) => {
                   e.preventDefault();
                   const element = document.getElementById('fixtures-results');
@@ -87,13 +90,13 @@ const Footer = () => {
                 href="https://www.serioussport.co.uk/teamstores/kingston-bagpuize" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="block text-sm opacity-90 hover:opacity-100 transition-opacity"
+                className="block py-1 text-sm opacity-90 hover:opacity-100 transition-opacity"
               >
                 Club Store
               </a>
               <Link 
                 to="/contact" 
-                className="block text-sm opacity-90 hover:opacity-100 transition-opacity"
+                className="block py-1 text-sm opacity-90 hover:opacity-100 transition-opacity"
               >
                 Contact Us
               </Link>

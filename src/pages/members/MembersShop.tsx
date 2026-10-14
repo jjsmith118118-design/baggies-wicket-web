@@ -400,9 +400,9 @@ function AdultRow({ child, options, paid, inBasket, onAdd }: {
       {paid ? (
         <span className="flex items-center gap-2 text-green-700 font-medium"><CheckCircle2 className="h-5 w-5" /> Paid</span>
       ) : options.length > 0 && (
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
           <Select value={choice} onValueChange={setChoice} disabled={inBasket}>
-            <SelectTrigger className="w-64" aria-label={`Membership type for ${child.first_name}`}>
+            <SelectTrigger className="w-full sm:w-64" aria-label={`Membership type for ${child.first_name}`}>
               <SelectValue placeholder="Choose membership" />
             </SelectTrigger>
             <SelectContent>

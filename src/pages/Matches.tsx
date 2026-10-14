@@ -6,6 +6,7 @@ import { Calendar, Clock, MapPin, ChevronLeft, ChevronRight, RefreshCw } from 'l
 import { useToast } from '@/components/ui/use-toast';
 import { fetchPlayCricket } from '@/lib/playCricket';
 import { format, startOfWeek, endOfWeek, addWeeks } from 'date-fns';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface Match {
   id: string;
@@ -28,6 +29,10 @@ const liveMatches: Match[] = [];
 
 
 const Matches = () => {
+  usePageMeta({
+    title: "Fixtures and results | Kingston Bagpuize Cricket Club",
+    description: "Upcoming fixtures and the latest results for every Kingston Bagpuize Cricket Club team, from Saturday league and T20 to junior cricket.",
+  });
   const [matches, setMatches] = useState<Match[]>(liveMatches);
   const [loading, setLoading] = useState(false);
   const [weekOffset, setWeekOffset] = useState(0);
@@ -243,11 +248,11 @@ const Matches = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-4xl font-bold text-foreground">Matches</h1>
+          <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground">Matches</h1>
             <Button onClick={fetchLiveData} disabled={loading} variant="outline">
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh Live Data
+              Refresh<span className="hidden sm:inline">&nbsp;Live Data</span>
             </Button>
           </div>
           
@@ -275,17 +280,18 @@ const Matches = () => {
         {/* Week Navigation */}
         <Card className="mb-6">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => setWeekOffset((prev) => Math.max(-1, prev - 1))}
+                aria-label="Previous week"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
-                Previous Week
+                <span className="hidden sm:inline">Previous Week</span><span className="sm:hidden">Prev</span>
               </Button>
               <div className="text-center">
-                <h3 className="text-xl font-bold">
+                <h3 className="text-lg sm:text-xl font-bold">
                   {weekOffset === -1 ? 'Previous Week' : 
                    weekOffset === 1 ? 'Next Week' : 'This Week'}
                 </h3>
@@ -295,8 +301,9 @@ const Matches = () => {
                 variant="ghost" 
                 size="sm"
                 onClick={() => setWeekOffset((prev) => Math.min(1, prev + 1))}
+                aria-label="Next week"
               >
-                Next Week
+                <span className="hidden sm:inline">Next Week</span><span className="sm:hidden">Next</span>
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
