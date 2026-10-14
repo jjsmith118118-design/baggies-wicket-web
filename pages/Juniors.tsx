@@ -23,8 +23,8 @@ const JUNIORS = {
     { groups: ['U13', 'U15', 'U18', 'U20'], label: 'U13 and older', when: 'Friday, 6pm to 8pm' },
   ],
   indoorStart: '[January]',
-  headOfJuniors: '[Name]',
-  welfareOfficer: '[Name]',
+  headOfJuniors: 'Simon Launder',
+  welfareOfficer: 'Caroline Walton',
 };
 
 const enquiryLink = (subject: string, body: string) =>
