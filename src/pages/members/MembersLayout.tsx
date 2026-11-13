@@ -61,7 +61,9 @@ const MembersLayout = () => {
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto" aria-label="Members">
           <NavLink to="/members" end className={tabClass}>My family</NavLink>
           <NavLink to="/members/shop" className={tabClass}>Pay subs & buy kit</NavLink>
-          {profile?.is_admin && <NavLink to="/members/admin" className={tabClass}>Committee</NavLink>}
+          <NavLink to="/members/100-club" className={tabClass}>100 Club</NavLink>
+          {profile?.is_admin && <NavLink to="/members/admin" end className={tabClass}>Committee</NavLink>}
+          {profile?.is_admin && <NavLink to="/members/admin/100-club" className={tabClass}>100 Club admin</NavLink>}
         </nav>
       </div>
 

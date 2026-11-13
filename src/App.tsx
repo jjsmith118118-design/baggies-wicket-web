@@ -16,6 +16,8 @@ import MembersLayout from "./pages/members/MembersLayout";
 import MembersDashboard from "./pages/members/MembersDashboard";
 import MembersShop from "./pages/members/MembersShop";
 import MembersAdmin from "./pages/members/MembersAdmin";
+import HundredClub from "./pages/members/HundredClub";
+import HundredClubAdmin from "./pages/members/HundredClubAdmin";
 
 const queryClient = new QueryClient();
 
@@ -37,7 +39,9 @@ const App = () => (
           <Route path="/members" element={<MembersLayout />}>
             <Route index element={<MembersDashboard />} />
             <Route path="shop" element={<MembersShop />} />
+            <Route path="100-club" element={<HundredClub />} />
             <Route path="admin" element={<MembersAdmin />} />
+            <Route path="admin/100-club" element={<HundredClubAdmin />} />
           </Route>
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

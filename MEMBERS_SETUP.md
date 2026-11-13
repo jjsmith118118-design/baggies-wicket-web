@@ -138,3 +138,80 @@ You're storing parents' contact details and children's names and dates of birth.
 launch, add a short privacy notice explaining what's collected and why, and limit admin
 access to the committee members who need it. Parents can see only their own family. This is
 enforced by the database itself, not just the website.
+
+---
+
+## 100 Club lottery
+
+Members pick numbers from 1–100 at `/members/100-club`. Each number costs **£12, paid once, for 12 months
+of draws**. Every month the committee runs the draw from **100 Club admin**: 1st prize £20, 2nd prize £12.
+Prices, prizes and the rules text all live in **`api/_lib/hundredClub.ts`**.
+
+### 1. Fill in the club details
+
+Open `api/_lib/hundredClub.ts` and replace every `TODO`:
+
+- **bank**: the club's sort code and account number. Members who aren't using pay-by-bank see these.
+- **promoter**, **licensingAuthority** and **licenceNumber**: a society lottery must show these. They appear in the rules on the page.
+
+### 2. Create the database tables
+
+In Supabase, go to **SQL Editor → New query**, paste the whole of `supabase/006_hundred_club.sql`, and click **Run**.
+
+### 3. Payments
+
+**Bank transfer (works straight away).** When a member chooses numbers, the site holds them for 7 days
+and gives them a unique reference such as `KBCC100-7QX4MZ`. They pay the club by bank transfer using that
+reference. A committee member then matches the reference on the bank statement and clicks **Mark paid**
+in **100 Club admin**. The numbers go into the draw immediately. Use **Cancel** to release numbers that
+were never paid for.
+
+**TrueLayer pay-by-bank (optional, recommended).** With TrueLayer, members tap **Pay by bank**, choose their bank
+and approve the payment in their banking app. The amount and reference are already filled in, the money goes
+straight into the club's bank account, and the payment confirms itself without anyone checking the statement.
+
+1. Sign up at console.truelayer.com with the club email. You start in **sandbox** (test) mode.
+2. In the Console's app settings, note the **client_id** and **client_secret**. The secret is shown only once.
+3. Make a signing key pair. In Terminal, run:
+   ```
+   openssl ecparam -genkey -name secp521r1 -noout -out ec512-private-key.pem
+   openssl ec -in ec512-private-key.pem -pubout -out ec512-public-key.pem
+   ```
+   Upload `ec512-public-key.pem` in the Console's payments settings (signing keys) and note the **Key ID** it gives you.
+   Keep the private key file secret, and never put it in GitHub.
+4. In the Console's allowed redirect URIs, add `https://www.kingstonbagpuizecc.co.uk/members/100-club`
+   and your preview address, for example `https://<branch-preview>.vercel.app/members/100-club`.
+5. In the Console's webhook settings, set the webhook URI to `https://<your-site>/api/truelayer-webhook`.
+   The site checks every webhook against TrueLayer's published signing keys.
+6. Add these in Vercel (Preview only to start with):
+
+   | Name | Value |
+   |---|---|
+   | `TRUELAYER_CLIENT_ID` | client_id |
+   | `TRUELAYER_CLIENT_SECRET` | client_secret |
+   | `TRUELAYER_SIGNING_KEY_ID` | The Key ID from step 3 |
+   | `TRUELAYER_SIGNING_PRIVATE_KEY` | The whole contents of `ec512-private-key.pem` |
+   | `TRUELAYER_ENV` | Leave unset for sandbox; `live` for real payments |
+   | `SITE_URL` | The site address with no path, e.g. `https://www.kingstonbagpuizecc.co.uk` (your preview address while testing) |
+
+7. Redeploy, then buy a number on the preview site. TrueLayer's sandbox offers mock test banks
+   that approve the payment without real money.
+8. To go live, complete TrueLayer's business verification, switch the Console to **Live**, create live
+   keys (steps 2–5 again) and set `TRUELAYER_ENV` to `live` in Vercel's Production settings.
+
+If the TrueLayer keys aren't set, or TrueLayer is down, members are automatically shown the bank transfer details instead.
+If a member hasn't added their name yet, they're asked to add it first, because TrueLayer needs the payer's name.
+
+### 4. Running the monthly draw
+
+In **100 Club admin**, choose the month and click **Run the draw**. The site picks two different numbers at
+random, using a cryptographically secure random generator, from every number that is paid up on the day.
+Each month can be drawn only once. The list of numbers in the draw is saved with the result, so it can be
+checked later. Members see the winners as "first name and initial". Once you've paid the winners, click
+**Mark prizes paid**.
+
+### Renewals
+
+A number is in the draw for 12 months from the day its payment is confirmed. In the last 30 days, members
+see a **Renew** button. Renewing early adds another 12 months to the end of the current year. After a
+number expires, the holder has 30 days to renew before it becomes available to anyone else.
