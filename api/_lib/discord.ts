@@ -69,3 +69,54 @@ export async function notifyDiscord(supabase: SupabaseClient, orderId: string, k
     console.error("Discord notification failed", err);
   }
 }
+
+// ---- 100 Club ---------------------------------------------------------
+// Posts each confirmed 100 Club payment. Uses DISCORD_100CLUB_WEBHOOK_URL if set
+// (e.g. a separate 100 Club channel), otherwise the main DISCORD_WEBHOOK_URL.
+export async function notifyLotteryPaid(supabase: SupabaseClient, paymentId: string) {
+  const url = process.env.DISCORD_100CLUB_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim();
+  if (!url) return;
+
+  try {
+    const { data: payment } = await supabase
+      .from("lottery_payments")
+      .select("member_id, numbers, amount_pence, reference, method, confirmed_by, unassigned_numbers")
+      .eq("id", paymentId)
+      .single();
+    if (!payment) return;
+
+    const { data: member } = await supabase.from("profiles").select("full_name").eq("id", payment.member_id).maybeSingle();
+    const parts = (member?.full_name ?? "").trim().split(/\s+/).filter(Boolean);
+    const memberName = parts.length ? `${parts[0]}${parts.length > 1 ? ` ${parts[parts.length - 1][0]}.` : ""}` : "A member";
+
+    const numbers = payment.numbers as number[];
+    const how = payment.method === "truelayer" ? "Pay by bank (confirmed automatically)"
+      : payment.confirmed_by ? "Bank transfer (marked paid by the committee)" : "Bank transfer";
+    const test = process.env.VERCEL_ENV === "production" ? "" : "[TEST] ";
+    const skipped = (payment.unassigned_numbers as number[] | null) ?? [];
+
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: "KBCC 100 Club",
+        embeds: [{
+          title: `${test}🎟️ 100 Club payment: ${gbp(payment.amount_pence)}`,
+          description: `Number${numbers.length > 1 ? "s" : ""} ${numbers.join(", ")}`,
+          color: MAROON,
+          fields: [
+            { name: "Member", value: memberName, inline: true },
+            { name: "Paid by", value: how, inline: true },
+            { name: "Reference", value: payment.reference, inline: true },
+            ...(skipped.length ? [{ name: "⚠️ Already taken by someone else", value: skipped.join(", ") }] : []),
+          ],
+          timestamp: new Date().toISOString(),
+        }],
+      }),
+      signal: AbortSignal.timeout(5000),
+    });
+  } catch (err) {
+    // A Discord problem must never affect a payment.
+    console.error("Discord 100 Club notification failed", err);
+  }
+}

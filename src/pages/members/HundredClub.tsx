@@ -33,6 +33,11 @@ export const monthName = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
 
 const [FIRST_PRIZE, SECOND_PRIZE] = HUNDRED_CLUB.prizesPence;
+const HOLD_NOTICE = `Numbers are held for ${HUNDRED_CLUB.reserveDays} days to allow time for manual reconciliation.`;
+
+/** Date a pending purchase's hold runs out. */
+const heldUntil = (createdAt: string) =>
+  formatDate(new Date(new Date(createdAt).getTime() + HUNDRED_CLUB.reserveDays * 864e5).toISOString());
 
 const cellStyles: Record<Cell["state"], string> = {
   available: "bg-background hover:bg-primary/10 border-border",
@@ -198,7 +203,7 @@ const HundredClub = () => {
             </p>
             <TransferDetails reference={justBought.reference} amountPence={justBought.amountPence} />
             <p className="text-sm text-muted-foreground">
-              Your numbers are entered into the draws as soon as the committee sees the payment arrive.
+              {HOLD_NOTICE} Your numbers are entered into the draws as soon as the committee sees the payment arrive.
             </p>
           </CardContent>
         </Card>
@@ -239,7 +244,9 @@ const HundredClub = () => {
             <CardContent className="p-4 space-y-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">Awaiting payment</Badge>
-                <span className="text-sm">Number{p.numbers.length > 1 ? "s" : ""} {p.numbers.join(", ")} · ordered {formatDate(p.created_at)}</span>
+                <span className="text-sm">
+                  Number{p.numbers.length > 1 ? "s" : ""} {p.numbers.join(", ")} · ordered {formatDate(p.created_at)} · held until {heldUntil(p.created_at)}
+                </span>
               </div>
               {justBought?.paymentId !== p.id && <TransferDetails reference={p.reference} amountPence={p.amount_pence} />}
               <Button variant="outline" size="sm" disabled={cancelling === p.id} onClick={() => cancel(p)}>
@@ -307,6 +314,7 @@ const HundredClub = () => {
                 I'm {HUNDRED_CLUB.minimumAge} or over and I've read the rules below.
               </Label>
             </div>
+            <p className="text-xs text-muted-foreground">{HOLD_NOTICE}</p>
             <Button disabled={!selected.length || !ageConfirmed || busy} onClick={buy}>
               {busy && <Loader2 className="animate-spin" />} Pay {selected.length ? formatPence(total) : ""} by bank
             </Button>
@@ -340,6 +348,7 @@ const HundredClub = () => {
         <ul className="list-disc pl-5 space-y-1">
           <li>Each number costs {formatPence(HUNDRED_CLUB.pricePerNumberPence)} and is in every monthly draw for 12 months from the day your payment is confirmed.</li>
           <li>Two numbers are drawn at random each month from the numbers that are paid up on the day: 1st prize {formatPence(FIRST_PRIZE)}, 2nd prize {formatPence(SECOND_PRIZE)}. A number can only win once per draw.</li>
+          <li>{HOLD_NOTICE} If payment hasn't been received by then, the numbers are released for others to choose.</li>
           <li>You can buy up to {HUNDRED_CLUB.maxPerPurchase} numbers at a time. When your year ends you have {HUNDRED_CLUB.renewalGraceDays} days to renew before your number is offered to someone else.</li>
           <li>Players must be {HUNDRED_CLUB.minimumAge} or over. Proceeds support Kingston Bagpuize Cricket Club.</li>
           <li>Promoter: {HUNDRED_CLUB.promoter}. Registered with {HUNDRED_CLUB.licensingAuthority}, registration {HUNDRED_CLUB.licenceNumber}.</li>

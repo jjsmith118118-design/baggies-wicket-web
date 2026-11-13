@@ -3,6 +3,7 @@ import { randomInt } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { HUNDRED_CLUB, REFERENCE_ALPHABET, makeReference } from "./hundredClub.js";
 import { TRUELAYER_FAILED, TRUELAYER_PAID, getTrueLayerPaymentStatus } from "./truelayer.js";
+import { notifyLotteryPaid } from "./discord.js";
 
 export function newReference() {
   let chars = "";
@@ -17,6 +18,8 @@ export async function markLotteryPaid(supabase: SupabaseClient, paymentId: strin
     p_grace_days: HUNDRED_CLUB.renewalGraceDays,
   });
   if (error) throw error;
+  // Only the call that actually marked it paid posts to Discord (so never twice).
+  if (data === true) await notifyLotteryPaid(supabase, paymentId);
   return data === true;
 }
 

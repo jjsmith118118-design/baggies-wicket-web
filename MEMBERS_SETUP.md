@@ -145,11 +145,11 @@ enforced by the database itself, not just the website.
 
 Members pick numbers from 1–100 at `/members/100-club`. Each number costs **£12, paid once, for 12 months
 of draws**. Every month the committee runs the draw from **100 Club admin**: 1st prize £20, 2nd prize £12.
-Prices, prizes and the rules text all live in **`api/_lib/hundredClub.ts`**.
+Prices, prizes and the hold time live in **`api/_lib/hundredClub.ts`**. The club's bank details, promoter and licence live in **`api/_lib/clubDetails.ts`**.
 
 ### 1. Fill in the club details
 
-Open `api/_lib/hundredClub.ts` and replace every `TODO`:
+Open `api/_lib/clubDetails.ts` on GitHub (click the file, then the pencil icon) and replace every `TODO`. Code updates never include this file, so your details won't be overwritten:
 
 - **bank**: the club's sort code and account number. Members who aren't using pay-by-bank see these.
 - **promoter**, **licensingAuthority** and **licenceNumber**: a society lottery must show these. They appear in the rules on the page.
@@ -160,7 +160,7 @@ In Supabase, go to **SQL Editor → New query**, paste the whole of `supabase/00
 
 ### 3. Payments
 
-**Bank transfer (works straight away).** When a member chooses numbers, the site holds them for 7 days
+**Bank transfer (works straight away).** When a member chooses numbers, the site holds them for 3 days (to allow time for manual reconciliation)
 and gives them a unique reference such as `KBCC100-7QX4MZ`. They pay the club by bank transfer using that
 reference. A committee member then matches the reference on the bank statement and clicks **Mark paid**
 in **100 Club admin**. The numbers go into the draw immediately. Use **Cancel** to release numbers that
@@ -234,3 +234,14 @@ the committee view, CSV downloads and Discord notifications work the same way fo
 Stripe's. The treasurer refunds by normal bank transfer, then changes the order's `status` to `refunded`
 in Supabase (Table Editor → orders). Bank orders show "by bank" and their reference in the committee's
 **Recent payments** list.
+
+---
+
+## Discord notifications for the 100 Club
+
+Every confirmed 100 Club payment (pay-by-bank, or a bank transfer marked paid by the committee) is posted to
+Discord with the numbers, amount, member (first name and initial) and reference.
+
+In Vercel → Settings → Environment Variables, add `DISCORD_100CLUB_WEBHOOK_URL` (type **Secret**) with the
+Discord webhook address for the channel you want. If it isn't set, 100 Club payments go to the same channel
+as subs and kit (`DISCORD_WEBHOOK_URL`). Preview sites label their posts **[TEST]**.
