@@ -6,14 +6,18 @@
 //   { action: "confirm", truelayerPaymentId }
 //     Called when the member comes back from TrueLayer. Checks with TrueLayer
 //     whether the money has gone and, if so, marks the numbers as theirs.
+//   { action: "cancel", paymentId }
+//     The member changed their mind: cancels their own unpaid purchase and
+//     releases the numbers straight away.
 import { getSupabaseAdmin, getUserFromRequest, json } from "./_lib/server.js";
 import { HUNDRED_CLUB } from "./_lib/hundredClub.js";
-import { createTrueLayerPayment, truelayerEnabled } from "./_lib/truelayer.js";
-import { newReference, settleFromTrueLayer } from "./_lib/lottery.js";
+import { TRUELAYER_PAID, createTrueLayerPayment, getTrueLayerPaymentStatus, truelayerEnabled } from "./_lib/truelayer.js";
+import { markLotteryPaid, newReference, settleFromTrueLayer } from "./_lib/lottery.js";
 
 type Body =
   | { action: "buy"; numbers?: unknown; ageConfirmed?: unknown }
-  | { action: "confirm"; truelayerPaymentId?: unknown };
+  | { action: "confirm"; truelayerPaymentId?: unknown }
+  | { action: "cancel"; paymentId?: unknown };
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -32,6 +36,32 @@ export async function POST(request: Request) {
         .from("lottery_payments").select("id, member_id").eq("provider_payment_id", truelayerPaymentId).maybeSingle();
       if (!payment || payment.member_id !== user.id) return json({ error: "Payment not found." }, 404);
       return json({ status: await settleFromTrueLayer(supabase, payment.id) });
+    }
+
+    if (body?.action === "cancel") {
+      const { paymentId } = body;
+      if (typeof paymentId !== "string" || !UUID.test(paymentId)) return json({ error: "Invalid payment." }, 400);
+      const { data: payment } = await supabase
+        .from("lottery_payments").select("id, member_id, status, provider_payment_id").eq("id", paymentId).maybeSingle();
+      if (!payment || payment.member_id !== user.id) return json({ error: "Payment not found." }, 404);
+      if (payment.status === "paid") return json({ error: "This has already been paid, so it can't be cancelled." }, 409);
+      if (payment.status === "cancelled") return json({ ok: true });
+
+      // If they started a pay-by-bank payment, make sure the money isn't already on its way.
+      if (payment.provider_payment_id) {
+        const status = await getTrueLayerPaymentStatus(payment.provider_payment_id);
+        if (TRUELAYER_PAID.includes(status)) {
+          await markLotteryPaid(supabase, payment.id, null);
+          return json({ error: "Your bank payment has already gone through, so your numbers are now yours." }, 409);
+        }
+        if (status === "authorized") {
+          return json({ error: "Your bank is still processing this payment. Please check back in a few minutes." }, 409);
+        }
+      }
+
+      const { error } = await supabase.rpc("lottery_cancel", { p_payment: payment.id });
+      if (error) throw error;
+      return json({ ok: true });
     }
 
     if (body?.action !== "buy") return json({ error: "Unknown request." }, 400);

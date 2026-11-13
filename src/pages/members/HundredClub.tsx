@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Copy, Landmark, Loader2, Trophy } from "lucide-react";
+import { Copy, Landmark, Loader2, Trophy, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
@@ -84,6 +84,7 @@ const HundredClub = () => {
   const [selected, setSelected] = useState<number[]>([]);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [cancelling, setCancelling] = useState<string | null>(null);
   const [justBought, setJustBought] = useState<BuyResult | null>(null);
 
   const load = useCallback(async () => {
@@ -105,14 +106,14 @@ const HundredClub = () => {
     if (!truelayerPaymentId) { load(); return; }
     const done = () => { setSearchParams({}, { replace: true }); load(); };
     if (searchParams.get("error")) {
-      toast("The bank payment wasn't completed. Your numbers are held, so you can pay by bank transfer below.");
+      toast("The bank payment wasn't completed. Your numbers are held, so you can pay by bank transfer below, or cancel to release them.");
       done();
       return;
     }
     callApi<{ status: string }>("/api/lottery-checkout", { action: "confirm", truelayerPaymentId })
       .then(({ status }) =>
         status === "paid" ? toast.success("Payment received. Good luck in the draw!")
-          : status === "failed" ? toast("The bank payment didn't go through. Your numbers are held, so you can pay by bank transfer below.")
+          : status === "failed" ? toast("The bank payment didn't go through. Your numbers are held, so you can pay by bank transfer below, or cancel to release them.")
           : toast("Thanks! Your bank is processing the payment. Your numbers will be confirmed shortly."))
       .catch(() => toast("We'll confirm your payment shortly."))
       .finally(done);
@@ -137,6 +138,25 @@ const HundredClub = () => {
       await load();
     } finally {
       setBusy(false);
+    }
+  };
+
+  const cancel = async (p: LotteryPayment) => {
+    const nums = p.numbers.join(", ");
+    if (!window.confirm(
+      `Cancel and release number${p.numbers.length > 1 ? "s" : ""} ${nums}?\n\n` +
+      "Only do this if you haven't sent a bank transfer for them. Anyone else will then be able to pick them.",
+    )) return;
+    setCancelling(p.id);
+    try {
+      await callApi("/api/lottery-checkout", { action: "cancel", paymentId: p.id });
+      toast.success(`Cancelled. Number${p.numbers.length > 1 ? "s" : ""} ${nums} released.`);
+      if (justBought?.paymentId === p.id) setJustBought(null);
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setCancelling(null);
+      await load();
     }
   };
 
@@ -222,6 +242,10 @@ const HundredClub = () => {
                 <span className="text-sm">Number{p.numbers.length > 1 ? "s" : ""} {p.numbers.join(", ")} · ordered {formatDate(p.created_at)}</span>
               </div>
               {justBought?.paymentId !== p.id && <TransferDetails reference={p.reference} amountPence={p.amount_pence} />}
+              <Button variant="outline" size="sm" disabled={cancelling === p.id} onClick={() => cancel(p)}>
+                {cancelling === p.id ? <Loader2 className="animate-spin" /> : <X />}
+                Cancel and release {p.numbers.length > 1 ? "these numbers" : "this number"}
+              </Button>
             </CardContent>
           </Card>
         ))}
