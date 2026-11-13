@@ -23,6 +23,7 @@ export type OrderItem = {
 export type Order = {
   id: string; parent_id: string; status: "pending" | "paid" | "cancelled" | "refunded"; total_pence: number;
   receipt_url: string | null; created_at: string; paid_at: string | null; order_items: OrderItem[];
+  payment_method?: "card" | "bank"; payment_reference?: string | null;
 };
 
 export const formatPence = (pence: number) =>

@@ -237,7 +237,14 @@ const MembersAdmin = () => {
                 return (
                   <li key={o.id} className="p-4 flex flex-wrap justify-between gap-2 text-sm">
                     <div>
-                      <p className="font-medium">{payer?.full_name ?? payer?.email} · {formatDate(o.paid_at ?? o.created_at)}</p>
+                      <p className="font-medium">
+                        {payer?.full_name ?? payer?.email} · {formatDate(o.paid_at ?? o.created_at)}
+                        {o.payment_method === "bank" && (
+                          <span className="ml-2 text-xs font-normal text-muted-foreground">
+                            by bank{o.payment_reference ? ` (ref ${o.payment_reference})` : ""}
+                          </span>
+                        )}
+                      </p>
                       <p className="text-muted-foreground">{o.order_items.map((i) => i.description).join("; ")}</p>
                     </div>
                     <span className="font-semibold">{formatPence(o.total_pence)}</span>

@@ -50,9 +50,26 @@ const MembersDashboard = () => {
     setLoading(false);
   }, [session]);
 
-  // Returning from Stripe: confirm the payment, then refresh.
+  // Returning from Stripe (?paid=…) or TrueLayer (?payment_id=…): confirm the payment, then refresh.
   useEffect(() => {
     const sessionId = searchParams.get("paid");
+    const truelayerPaymentId = searchParams.get("payment_id");
+    if (truelayerPaymentId) {
+      const done = () => { setSearchParams({}, { replace: true }); load(); };
+      if (searchParams.get("error")) {
+        toast("The bank payment wasn't completed, so nothing was taken. You can try again from Pay subs & buy kit.");
+        done();
+        return;
+      }
+      callApi<{ status: string }>("/api/confirm-checkout", { truelayerPaymentId })
+        .then(({ status }) =>
+          status === "paid" ? toast.success("Payment received – thank you!")
+            : status === "failed" ? toast("The bank payment didn't go through, so nothing was taken. Please try again.")
+            : toast("Thanks! Your bank is processing the payment. It will show as paid shortly."))
+        .catch(() => toast("We'll update your payment shortly."))
+        .finally(done);
+      return;
+    }
     if (!sessionId) {
       load();
       return;
@@ -155,6 +172,11 @@ const MembersDashboard = () => {
                     </div>
                     <div className="flex items-center gap-4">
                       <span className="font-semibold">{formatPence(order.total_pence)}</span>
+                      {order.payment_method === "bank" && (
+                        <span className="text-sm text-muted-foreground">
+                          Paid by bank{order.payment_reference ? ` · ref ${order.payment_reference}` : ""}
+                        </span>
+                      )}
                       {order.receipt_url && (
                         <a href={order.receipt_url} target="_blank" rel="noopener noreferrer"
                            className="text-sm text-primary hover:underline inline-flex items-center gap-1 py-1.5">

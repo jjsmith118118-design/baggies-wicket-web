@@ -83,6 +83,7 @@ export async function POST(request: Request) {
         paymentId, reference, amountPence: amount,
         payer: { name: profile!.full_name!.trim(), email: user.email ?? "" },
         returnUrl: `${origin}/members/100-club`,
+        metadata: { lottery_payment_id: paymentId },
       });
       const { error } = await supabase.from("lottery_payments")
         .update({ provider_payment_id: truelayerPaymentId }).eq("id", paymentId);

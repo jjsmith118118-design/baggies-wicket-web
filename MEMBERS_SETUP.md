@@ -189,7 +189,7 @@ straight into the club's bank account, and the payment confirms itself without a
    |---|---|
    | `TRUELAYER_CLIENT_ID` | client_id |
    | `TRUELAYER_CLIENT_SECRET` | client_secret |
-   | `TRUELAYER_SIGNING_KEY_ID` | The Key ID from step 3 |
+   | `TRUELAYER_SIGNING_KEY_ID` | The Key ID from step 3, in lowercase (the Console shows it in capitals) |
    | `TRUELAYER_SIGNING_PRIVATE_KEY` | The whole contents of `ec512-private-key.pem` |
    | `TRUELAYER_ENV` | Leave unset for sandbox; `live` for real payments |
    | `SITE_URL` | The site address with no path, e.g. `https://www.kingstonbagpuizecc.co.uk` (your preview address while testing) |
@@ -215,3 +215,22 @@ checked later. Members see the winners as "first name and initial". Once you've 
 A number is in the draw for 12 months from the day its payment is confirmed. In the last 30 days, members
 see a **Renew** button. Renewing early adds another 12 months to the end of the current year. After a
 number expires, the holder has 30 days to renew before it becomes available to anyone else.
+
+---
+
+## Pay by bank for subs and kit
+
+When TrueLayer is switched on (the same settings as the 100 Club), the **Pay subs & buy kit** basket shows
+two buttons: **Pay by card** (Stripe, as before) and **Pay by bank** (TrueLayer). Prices, sibling discounts,
+the committee view, CSV downloads and Discord notifications work the same way for both.
+
+1. In Supabase, run `supabase/007_pay_by_bank.sql` (SQL Editor → New query → paste → Run). It only adds
+   columns, and existing orders are marked as card payments.
+2. In the TrueLayer Console, add one more **redirect URI**: your site address followed by `/members`
+   (for example `https://www.kingstonbagpuizecc.co.uk/members`, plus the preview address while testing).
+3. Redeploy.
+
+**Refunds:** a bank payment goes straight into the club's account, so there's no one-click refund like
+Stripe's. The treasurer refunds by normal bank transfer, then changes the order's `status` to `refunded`
+in Supabase (Table Editor → orders). Bank orders show "by bank" and their reference in the committee's
+**Recent payments** list.

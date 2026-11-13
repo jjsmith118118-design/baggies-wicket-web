@@ -23,12 +23,12 @@ export const HUNDRED_CLUB = {
   // Shown to members who pay by manual bank transfer, and printed on the rules.
   bank: {
     accountName: "Kingston Bagpuize Cricket Club",
-    sortCode: "54-21-23",
-    accountNumber: "87281449",
+    sortCode: "00-00-00", // TODO: club bank sort code
+    accountNumber: "00000000", // TODO: club bank account number
   },
   // A society lottery must show who is promoting it and who licensed it.
-  promoter: "Jordan Smith",
-  licensingAuthority: "Vale of White Horse District Council",
+  promoter: "TODO: name of the club's lottery promoter", // e.g. "Jane Smith, Treasurer"
+  licensingAuthority: "TODO: e.g. Vale of White Horse District Council",
   licenceNumber: "TODO: registration number",
 } as const;
 

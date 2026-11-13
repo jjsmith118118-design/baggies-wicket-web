@@ -8,6 +8,7 @@
 import { getSupabaseAdmin, json } from "./_lib/server.js";
 import { verifyTrueLayerWebhook } from "./_lib/truelayer.js";
 import { settleFromTrueLayer } from "./_lib/lottery.js";
+import { settleOrderFromTrueLayer } from "./_lib/bankOrders.js";
 
 const HANDLED = ["payment_executed", "payment_settled", "payment_failed"];
 
@@ -31,12 +32,18 @@ export async function POST(request: Request) {
     if (!event.type || !HANDLED.includes(event.type) || !event.payment_id) return json({ received: true });
 
     const supabase = getSupabaseAdmin();
+
+    // A 100 Club purchase?
     const { data: payment } = await supabase
       .from("lottery_payments").select("id").eq("provider_payment_id", event.payment_id).maybeSingle();
-    if (!payment) return json({ received: true }); // not a 100 Club payment
+    if (payment) return json({ received: true, status: await settleFromTrueLayer(supabase, payment.id) });
 
-    const status = await settleFromTrueLayer(supabase, payment.id);
-    return json({ received: true, status });
+    // Subs or kit paid by bank?
+    const { data: order } = await supabase
+      .from("orders").select("id").eq("truelayer_payment_id", event.payment_id).maybeSingle();
+    if (order) return json({ received: true, status: await settleOrderFromTrueLayer(supabase, order.id) });
+
+    return json({ received: true }); // not one of ours
   } catch (err) {
     console.error("TrueLayer webhook failed", err, body.slice(0, 1000));
     return json({ error: "Handler error" }, 500);

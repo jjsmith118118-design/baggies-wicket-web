@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, ExternalLink, Loader2, ShoppingBasket, X } from "lucide-react";
+import { CheckCircle2, CreditCard, ExternalLink, Landmark, Loader2, ShoppingBasket, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { PlayUpLink } from "./PlayUpDialog";
@@ -16,7 +16,11 @@ import {
 } from "@/lib/members";
 
 type BasketLine = { key: string; product: Product; child: Child | null; size: string | null; quantity: number };
-type Quote = { total: number; lines: { unit_price_pence: number; full_price_pence: number; note: string | null }[] };
+type Quote = {
+  total: number; bankAvailable?: boolean;
+  lines: { unit_price_pence: number; full_price_pence: number; note: string | null }[];
+};
+type PayMethod = "card" | "bank";
 
 const NO_CHILD = "none";
 
@@ -28,7 +32,7 @@ const MembersShop = () => {
   const [paidIds, setPaidIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [basket, setBasket] = useState<BasketLine[]>([]);
-  const [paying, setPaying] = useState(false);
+  const [paying, setPaying] = useState<PayMethod | false>(false);
   const [quote, setQuote] = useState<Quote | null>(null);
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [quoting, setQuoting] = useState(false);
@@ -141,16 +145,17 @@ const MembersShop = () => {
 
   const inBasketFor = (child: Child) => basket.some((l) => l.child?.id === child.id && l.product.category === "membership");
 
-  const checkout = async () => {
-    setPaying(true);
+  const checkout = async (method: PayMethod) => {
+    setPaying(method);
     try {
-      const { url } = await callApi<{ url: string }>("/api/create-checkout", { items: basketItems });
+      const { url } = await callApi<{ url: string }>("/api/create-checkout", { items: basketItems, method });
       window.location.href = url;
     } catch (err) {
       toast.error((err as Error).message);
       setPaying(false);
     }
   };
+  const bankAvailable = !!quote?.bankAvailable;
 
   if (loading) {
     return <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
@@ -306,10 +311,20 @@ const MembersShop = () => {
                 <div className="flex justify-between font-semibold border-t border-border pt-3 mb-4">
                   <span>Total</span><span>{formatPence(total)}</span>
                 </div>
-                <Button className="w-full" size="lg" onClick={checkout} disabled={paying || !canPay}>
-                  {(paying || quoting) && <Loader2 className="animate-spin" />}Pay {formatPence(total)}
+                <Button className="w-full" size="lg" onClick={() => checkout("card")} disabled={!!paying || !canPay}>
+                  {(paying === "card" || (quoting && !paying)) && <Loader2 className="animate-spin" />}
+                  <CreditCard /> Pay {formatPence(total)} by card
                 </Button>
-                <p className="text-xs text-muted-foreground mt-3 text-center">Secure card payment by Stripe. Apple Pay and Google Pay accepted.</p>
+                {bankAvailable && (
+                  <Button className="w-full mt-2" size="lg" variant="outline" onClick={() => checkout("bank")} disabled={!!paying || !canPay}>
+                    {paying === "bank" && <Loader2 className="animate-spin" />}
+                    <Landmark /> Pay by bank
+                  </Button>
+                )}
+                <p className="text-xs text-muted-foreground mt-3 text-center">
+                  Card payments by Stripe, with Apple Pay and Google Pay accepted.
+                  {bankAvailable && " Pay by bank sends the money straight from your banking app (via TrueLayer), with no card needed."}
+                </p>
               </>
             )}
           </CardContent>
@@ -322,9 +337,17 @@ const MembersShop = () => {
           <span className="text-sm">
             {basket.length} {basket.length === 1 ? "item" : "items"} · <strong>{formatPence(total)}</strong>
           </span>
-          <Button onClick={checkout} disabled={paying || !canPay}>
-            {(paying || quoting) && <Loader2 className="animate-spin" />}Pay {formatPence(total)}
-          </Button>
+          <div className="flex gap-2">
+            {bankAvailable && (
+              <Button variant="outline" onClick={() => checkout("bank")} disabled={!!paying || !canPay} aria-label="Pay by bank">
+                {paying === "bank" ? <Loader2 className="animate-spin" /> : <Landmark />} Bank
+              </Button>
+            )}
+            <Button onClick={() => checkout("card")} disabled={!!paying || !canPay}>
+              {(paying === "card" || (quoting && !paying)) && <Loader2 className="animate-spin" />}
+              {bankAvailable ? "Card" : `Pay ${formatPence(total)}`}
+            </Button>
+          </div>
         </div>
       )}
     </div>

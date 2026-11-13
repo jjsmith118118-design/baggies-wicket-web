@@ -19,7 +19,9 @@
 import * as tlSigning from "truelayer-signing";
 import { HUNDRED_CLUB } from "./hundredClub.js";
 
-const live = () => process.env.TRUELAYER_ENV === "live";
+// Settings are trimmed so a stray space or line break pasted into Vercel can't break them.
+const env = (name: string) => (process.env[name] ?? "").trim();
+const live = () => env("TRUELAYER_ENV") === "live";
 const API = () => (live() ? "https://api.truelayer.com" : "https://api.truelayer-sandbox.com");
 const AUTH = () => (live() ? "https://auth.truelayer.com" : "https://auth.truelayer-sandbox.com");
 const HPP = () => (live() ? "https://payment.truelayer.com" : "https://payment.truelayer-sandbox.com");
@@ -30,13 +32,13 @@ export const WEBHOOK_JWKS_URLS = [
 
 export function truelayerEnabled() {
   return Boolean(
-    process.env.TRUELAYER_CLIENT_ID && process.env.TRUELAYER_CLIENT_SECRET &&
-    process.env.TRUELAYER_SIGNING_KEY_ID && process.env.TRUELAYER_SIGNING_PRIVATE_KEY,
+    env("TRUELAYER_CLIENT_ID") && env("TRUELAYER_CLIENT_SECRET") &&
+    env("TRUELAYER_SIGNING_KEY_ID") && env("TRUELAYER_SIGNING_PRIVATE_KEY"),
   );
 }
 
 // Vercel sometimes stores multi-line values with literal "\n".
-const privateKey = () => (process.env.TRUELAYER_SIGNING_PRIVATE_KEY ?? "").replace(/\\n/g, "\n");
+const privateKey = () => env("TRUELAYER_SIGNING_PRIVATE_KEY").replace(/\\n/g, "\n");
 
 let cachedToken: { value: string; expires: number } | null = null;
 
@@ -47,8 +49,8 @@ async function accessToken() {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       grant_type: "client_credentials",
-      client_id: process.env.TRUELAYER_CLIENT_ID ?? "",
-      client_secret: process.env.TRUELAYER_CLIENT_SECRET ?? "",
+      client_id: env("TRUELAYER_CLIENT_ID"),
+      client_secret: env("TRUELAYER_CLIENT_SECRET"),
       scope: "payments",
     }),
     signal: AbortSignal.timeout(10000),
@@ -60,7 +62,7 @@ async function accessToken() {
 }
 
 function beneficiary(reference: string) {
-  const merchantAccountId = process.env.TRUELAYER_MERCHANT_ACCOUNT_ID;
+  const merchantAccountId = env("TRUELAYER_MERCHANT_ACCOUNT_ID");
   if (merchantAccountId) {
     return { type: "merchant_account", merchant_account_id: merchantAccountId, reference, statement_reference: reference };
   }
@@ -78,11 +80,12 @@ function beneficiary(reference: string) {
 
 /** Creates the payment and returns TrueLayer's id plus the hosted payment page link. */
 export async function createTrueLayerPayment(opts: {
-  paymentId: string; // our lottery_payments id (also the idempotency key)
+  paymentId: string; // our own id for this purchase (also the idempotency key)
   reference: string;
   amountPence: number;
   payer: { name: string; email: string };
   returnUrl: string; // must be allow-listed in the TrueLayer Console
+  metadata: Record<string, string>; // e.g. { lottery_payment_id } or { order_id }
 }) {
   const path = "/v3/payments";
   const body = JSON.stringify({
@@ -94,10 +97,11 @@ export async function createTrueLayerPayment(opts: {
       beneficiary: beneficiary(opts.reference),
     },
     user: { name: opts.payer.name, email: opts.payer.email },
-    metadata: { lottery_payment_id: opts.paymentId },
+    metadata: opts.metadata,
   });
   const signature = tlSigning.sign({
-    kid: process.env.TRUELAYER_SIGNING_KEY_ID ?? "",
+    // The Console shows the KID in capitals, but TrueLayer stores it in lowercase.
+    kid: env("TRUELAYER_SIGNING_KEY_ID").toLowerCase(),
     privateKeyPem: privateKey(),
     method: "POST" as tlSigning.HttpMethod, // const enum: use the string so bundlers don't need to inline it
     path,

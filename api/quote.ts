@@ -4,6 +4,7 @@
 // same order as the items sent.
 import { getSupabaseAdmin, getUserFromRequest, json } from "./_lib/server.js";
 import { priceBasket, PricingError, type BasketItem } from "./_lib/pricing.js";
+import { truelayerEnabled } from "./_lib/truelayer.js";
 
 export async function POST(request: Request) {
   try {
@@ -13,6 +14,8 @@ export async function POST(request: Request) {
     const { lines, total } = await priceBasket(getSupabaseAdmin(), user.id, body?.items ?? []);
     return json({
       total,
+      bankAvailable: truelayerEnabled(), // shows the "Pay by bank" button
+
       lines: lines.map((l) => ({ unit_price_pence: l.unit_price_pence, full_price_pence: l.full_price_pence, note: l.note })),
     });
   } catch (err) {
