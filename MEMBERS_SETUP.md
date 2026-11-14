@@ -143,8 +143,7 @@ enforced by the database itself, not just the website.
 
 ## 100 Club lottery
 
-Members pick numbers from 1–100 at `/members/100-club`. Each number costs **£12, paid once, for 12 months
-of draws**. Every month the committee runs the draw from **100 Club admin**: 1st prize £20, 2nd prize £12.
+Members pick numbers from 1–100 at `/members/100-club`. Each number costs **£12, paid once, for the club year (1 April – 31 March)**. Every month the committee runs the draw from **100 Club admin**: 1st prize £20, 2nd prize £12.
 Prices, prizes and the hold time live in **`api/_lib/hundredClub.ts`**. The club's bank details, promoter and licence live in **`api/_lib/clubDetails.ts`**.
 
 ### 1. Fill in the club details
@@ -210,11 +209,20 @@ Each month can be drawn only once. The list of numbers in the draw is saved with
 checked later. Members see the winners as "first name and initial". Once you've paid the winners, click
 **Mark prizes paid**.
 
-### Renewals
+### The club year and renewals
 
-A number is in the draw for 12 months from the day its payment is confirmed. In the last 30 days, members
-see a **Renew** button. Renewing early adds another 12 months to the end of the current year. After a
-number expires, the holder has 30 days to renew before it becomes available to anyone else.
+The 100 Club runs on a club year from **1 April to 31 March**. £12 buys a number until the next 31 March,
+whenever in the year it's bought (the page shows how many draws are left).
+
+- **31 March:** every number lapses automatically. Nothing needs doing.
+- **1–14 April (holders first):** last year's holders see a **Renew** button on their number. Nobody else can
+  take a lapsed number during this time.
+- **From 15 April:** any number that wasn't renewed goes on general sale.
+- **All year round:** numbers nobody holds can be bought at any time, including during 1–14 April.
+- A member can't pay twice for the same number in one club year.
+
+The 14-day window is `renewalGraceDays` in `api/_lib/hundredClub.ts`; if you change it, change the `14` in
+`supabase/008_hundred_club_april_year.sql` to match and run that script again.
 
 ---
 

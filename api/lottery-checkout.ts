@@ -100,6 +100,8 @@ export async function POST(request: Request) {
       if (!error) { paymentId = data as string; break; }
       const taken = /NUMBER_UNAVAILABLE:(\d+)/.exec(error.message);
       if (taken) return json({ error: `Sorry, number ${taken[1]} has just been taken. Please pick another.` }, 409);
+      const paid = /ALREADY_PAID:(\d+)/.exec(error.message);
+      if (paid) return json({ error: `Number ${paid[1]} is already yours until 31 March. You can renew it from 1 April.` }, 409);
       if (error.code !== "23505") throw error; // 23505 = duplicate reference
     }
     if (!paymentId) throw new Error("Couldn't create a unique reference");

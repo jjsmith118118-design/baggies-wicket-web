@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { callApi, formatDate, formatPence } from "@/lib/members";
-import { HUNDRED_CLUB } from "../../../api/_lib/hundredClub";
+import { HUNDRED_CLUB, drawsLeftThisYear, inHoldersFirstWindow, seasonEnd } from "../../../api/_lib/hundredClub";
 
 type Cell = { number: number; state: "available" | "taken" | "reserved" | "mine" | "mine_pending"; paid_until: string | null };
 export type LotteryPayment = {
@@ -171,8 +171,11 @@ const HundredClub = () => {
 
   const mine = board.filter((c) => c.state === "mine");
   const pending = payments.filter((p) => p.status === "pending");
-  const soon = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
   const today = new Date().toISOString().slice(0, 10);
+  const yearEnds = formatDate(seasonEnd());
+  const drawsLeft = drawsLeftThisYear();
+  const holdersFirst = inHoldersFirstWindow();
+  const renewBy = `${HUNDRED_CLUB.renewalGraceDays} April`;
   const total = selected.length * HUNDRED_CLUB.pricePerNumberPence;
   const myWins = draws.flatMap((d) => [
     d.first_holder_id === session?.user.id ? { d, n: d.first_number, prize: d.first_prize_pence } : null,
@@ -184,9 +187,24 @@ const HundredClub = () => {
       <section className="max-w-3xl">
         <h2 className="text-2xl font-bold mb-2">The 100 Club</h2>
         <p className="text-muted-foreground">
-          Pick a number from 1 to {HUNDRED_CLUB.totalNumbers} for {formatPence(HUNDRED_CLUB.pricePerNumberPence)} a year.
-          Every month we draw two winners: <strong className="text-foreground">{formatPence(FIRST_PRIZE)}</strong> for first
+          Pick a number from 1 to {HUNDRED_CLUB.totalNumbers} for {formatPence(HUNDRED_CLUB.pricePerNumberPence)}. It's
+          in every draw until the end of the club year on 31 March. Every month we draw two winners: <strong className="text-foreground">{formatPence(FIRST_PRIZE)}</strong> for first
           and <strong className="text-foreground">{formatPence(SECOND_PRIZE)}</strong> for second. The rest goes to the club.
+        </p>
+        <p className="mt-3 text-sm rounded-md border border-border bg-muted/40 p-3">
+          {holdersFirst ? (
+            <>
+              <strong>Holders first until {renewBy}:</strong> last year's holders can renew their own numbers now.
+              Numbers they don't renew go on general sale on {HUNDRED_CLUB.renewalGraceDays + 1} April. Any number
+              nobody holds can be bought straight away.
+            </>
+          ) : (
+            <>
+              Numbers bought now are in the draws until <strong>{yearEnds}</strong>
+              {" "}({drawsLeft} monthly draw{drawsLeft === 1 ? "" : "s"} left this year). All numbers reset on 1 April,
+              when last year's holders get until {renewBy} to renew theirs first.
+            </>
+          )}
         </p>
       </section>
 
@@ -218,18 +236,17 @@ const HundredClub = () => {
           <div className="flex flex-wrap gap-3">
             {mine.map((c) => {
               const lapsed = !!c.paid_until && c.paid_until < today;
-              const expiring = !!c.paid_until && c.paid_until <= soon;
               return (
                 <Card key={c.number} className="w-[calc(50%-0.375rem)] sm:w-44">
                   <CardContent className="p-4">
                     <div className="text-3xl font-bold text-primary">{c.number}</div>
                     <div className="text-xs text-muted-foreground mt-1">
-                      {lapsed ? `Expired ${formatDate(c.paid_until!)}` : `In the draw until ${formatDate(c.paid_until!)}`}
+                      {lapsed ? `Lapsed ${formatDate(c.paid_until!)}. Renew by ${renewBy} to keep it` : `In the draw until ${formatDate(c.paid_until!)}`}
                     </div>
-                    {expiring && (
-                      <Button size="sm" variant={lapsed ? "default" : "outline"} className="mt-3 w-full"
+                    {lapsed && (
+                      <Button size="sm" className="mt-3 w-full"
                               onClick={() => !selected.includes(c.number) && toggle(c.number)}>
-                        {selected.includes(c.number) ? "Added below" : "Renew for a year"}
+                        {selected.includes(c.number) ? "Added below" : `Renew for ${formatPence(HUNDRED_CLUB.pricePerNumberPence)}`}
                       </Button>
                     )}
                   </CardContent>
@@ -286,7 +303,8 @@ const HundredClub = () => {
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5 max-w-2xl">
           {board.map((c) => {
             const isSelected = selected.includes(c.number);
-            const selectable = c.state === "available" || c.state === "mine";
+            // Your own number can only be picked again once it has lapsed (to renew it from 1 April).
+            const selectable = c.state === "available" || (c.state === "mine" && !!c.paid_until && c.paid_until < today);
             return (
               <button key={c.number} disabled={!selectable} onClick={() => toggle(c.number)} aria-pressed={isSelected}
                       aria-label={`Number ${c.number}, ${c.state.replace("_", " ")}`}
@@ -301,11 +319,11 @@ const HundredClub = () => {
         <Card className="mt-6 max-w-2xl">
           <CardContent className="p-5 space-y-4">
             {selected.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Tap the numbers you'd like. Tap one of your own to renew it.</p>
+              <p className="text-sm text-muted-foreground">Tap the numbers you'd like. From 1 April you can tap one of your own to renew it.</p>
             ) : (
               <p>
                 <strong>{selected.join(", ")}</strong>: {selected.length} × {formatPence(HUNDRED_CLUB.pricePerNumberPence)} ={" "}
-                <strong>{formatPence(total)}</strong> for a year of draws
+                <strong>{formatPence(total)}</strong>, in the draws until {yearEnds}
               </p>
             )}
             <div className="flex items-start gap-2">
@@ -346,10 +364,11 @@ const HundredClub = () => {
       <section className="max-w-3xl text-sm text-muted-foreground space-y-2">
         <h3 className="text-base font-semibold text-foreground">Rules</h3>
         <ul className="list-disc pl-5 space-y-1">
-          <li>Each number costs {formatPence(HUNDRED_CLUB.pricePerNumberPence)} and is in every monthly draw for 12 months from the day your payment is confirmed.</li>
+          <li>The club year runs from 1 April to 31 March. Each number costs {formatPence(HUNDRED_CLUB.pricePerNumberPence)}, whenever in the year you buy it, and is in every monthly draw from when your payment is confirmed until 31 March.</li>
+          <li>All numbers reset on 1 April. Last year's holders can renew their own number until {renewBy}; after that, numbers that weren't renewed go on general sale. Numbers nobody holds can be bought at any time.</li>
           <li>Two numbers are drawn at random each month from the numbers that are paid up on the day: 1st prize {formatPence(FIRST_PRIZE)}, 2nd prize {formatPence(SECOND_PRIZE)}. A number can only win once per draw.</li>
           <li>{HOLD_NOTICE} If payment hasn't been received by then, the numbers are released for others to choose.</li>
-          <li>You can buy up to {HUNDRED_CLUB.maxPerPurchase} numbers at a time. When your year ends you have {HUNDRED_CLUB.renewalGraceDays} days to renew before your number is offered to someone else.</li>
+          <li>You can buy up to {HUNDRED_CLUB.maxPerPurchase} numbers at a time.</li>
           <li>Players must be {HUNDRED_CLUB.minimumAge} or over. Proceeds support Kingston Bagpuize Cricket Club.</li>
           <li>Promoter: {HUNDRED_CLUB.promoter}. Registered with {HUNDRED_CLUB.licensingAuthority}, registration {HUNDRED_CLUB.licenceNumber}.</li>
         </ul>
